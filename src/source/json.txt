@@ -1,0 +1,17 @@
+{
+  "Name":"value",
+  "gender":"value",
+  "Strength":6,
+  "Agility":4,
+  "Intelligence":-1,
+  "Luck":4,
+  "wealth":2,
+  "LevelOfPain":8,
+  "ballcounter":1,
+  "Defence":6.5,
+  "location":{
+  "x":1,
+  "y":2,
+  "z":3
+  }
+}

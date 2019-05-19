@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<collection>
+<protagonist name="Joe">
+    <gender>male</gender>
+    <Strength>1.0</Strength>
+    <Agility>1.0</Agility>
+    <Intelligence>1.0</Intelligence>
+    <Luck>1.0</Luck>
+    <wealth>50</wealth>
+    <LevelOfPain>0.1</LevelOfPain>
+    <ballcounter>0</ballcounter>
+    <Defence_k>0.0</Defence_k>
+</protagonist>
+<protagonist name="Mike">
+    <gender>male</gender>
+    <Strength>1.0</Strength>
+    <Agility>1.0</Agility>
+    <Intelligence>1.0</Intelligence>
+    <Luck>1.0</Luck>
+    <wealth>50</wealth>
+    <LevelOfPain>0.1</LevelOfPain>
+    <ballcounter>0</ballcounter>
+    <Defence_k>0.0</Defence_k>
+</protagonist>
+<protagonist name="Bob">
+    <gender>male</gender>
+    <Strength>1.0</Strength>
+    <Agility>1.0</Agility>
+    <Intelligence>1.0</Intelligence>
+    <Luck>1.0</Luck>
+    <wealth>50</wealth>
+    <LevelOfPain>0.1</LevelOfPain>
+    <ballcounter>0</ballcounter>
+    <Defence_k>0.0</Defence_k>
+</protagonist>
+<protagonist name="Anna">
+    <gender>female</gender>
+    <Strength>1.0</Strength>
+    <Agility>1.0</Agility>
+    <Intelligence>1.0</Intelligence>
+    <Luck>1.0</Luck>
+    <wealth>50</wealth>
+    <LevelOfPain>0.1</LevelOfPain>
+    <ballcounter>0</ballcounter>
+    <Defence_k>0.0</Defence_k>
+</protagonist>
+</collection>
