@@ -4,11 +4,14 @@ import javax.xml.bind.annotation.*;
 
 import emotions.Emotions;
 
+import java.io.Serializable;
+import java.util.Date;
+
 import static java.lang.Math.abs;
 
 @XmlType(name = "Protagonist")
 @XmlRootElement
-public class Protagonist implements Comparable<Protagonist> {
+public class Protagonist implements Comparable<Protagonist>, Serializable {
     private String gender;
     private double Strength;
     private double Agility;
@@ -21,6 +24,7 @@ public class Protagonist implements Comparable<Protagonist> {
     private int ballCounter;
     private double Defence;
     private Emotions emotion;
+    private Date date;
 
     public Protagonist() {
     }
@@ -36,7 +40,8 @@ public class Protagonist implements Comparable<Protagonist> {
                        double levelOfPain,
                        int ballCounter,
                        double defence,
-                       Emotions emotion) {
+                       Emotions emotion,
+                       Date date) {
         this.gender = gender;
         Strength = strength;
         Agility = agility;
@@ -49,6 +54,7 @@ public class Protagonist implements Comparable<Protagonist> {
         this.ballCounter = ballCounter;
         Defence = defence;
         this.emotion = emotion;
+        this.date = date;
     }
 
     @Override
@@ -83,6 +89,7 @@ public class Protagonist implements Comparable<Protagonist> {
         boolean Fgender = false;
         boolean Flocation = false;
         boolean Femotion = false;
+//        boolean Fdate = false;
         if (Name == null) {
             if (F.Name == null) {
                 FName = true;
@@ -111,7 +118,14 @@ public class Protagonist implements Comparable<Protagonist> {
         } else {
             Femotion = emotion.equals(F.emotion);
         }
-        return semiResult && Femotion && Fgender && Flocation && FName;
+//        if (date == null) {
+//            if (F.date == null) {
+//                Fdate = true;
+//            }
+//        } else {
+//            Fdate = date.equals(F.date);
+//        }
+        return semiResult && Femotion && Fgender && Flocation && FName ;//&&Fdate
     }
 
     @Override
@@ -119,7 +133,7 @@ public class Protagonist implements Comparable<Protagonist> {
         return "Name = " + Name + ";\ngender = " + gender + ";\nStrength = " + Strength + ";\nAgility = " + Agility + ";\nIntelligence = " + Intelligence +
                 ";\nLuck = " + Luck + ";\nwealth = " + wealth + ";\nLevelOfPain = "
                 + LevelOfPain + ";\nballcounter = " + ballCounter + ";\nDefence = " + Defence + ";\n" +
-                "emotion = " + emotion + ";\nlocation = " + location + ";";
+                "emotion = " + emotion + ";\nlocation = " + location + ";\nDate = " + date + ";\n";
     }
 
     @Override
@@ -147,4 +161,11 @@ public class Protagonist implements Comparable<Protagonist> {
         Name = name;
     }
 
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
 }

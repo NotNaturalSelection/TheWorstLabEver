@@ -31,138 +31,76 @@ public class ConsoleLineApp {
             "show", "info", "load",
             "save", "quit", "exit",
             "add", "add_if_min",
-            "remove", "help", "filepath"};
-    private String path;
+            "remove", "help", "filepath", "import"};
     private Date date;
-    private LinkedHashSet<Protagonist> col = new LinkedHashSet<>();
-    public static void main(String[] args) {
-        String subPath = "";
-        boolean bool = true;
-        if (System.getenv("DATAXML") != null && new File(System.getenv("DATAXML")).exists()) {
-            subPath = System.getenv("DATAXML");
-        } else {
-            try {
-                String sub;
-                System.out.println("Файл в пути по умолчанию не найден. Введите путь самостоятельно" +
-                        "или введите команду выхода \"/quit\"");
-                do {
-                    sub = sc.nextLine();
-                    if (!new File(sub).exists() && !sub.equals("/quit")) {
-                        System.out.println("Файл не существует. Проверьте правильность введенных данных или введите " +
-                                "\"/quit\", чтобы выйти из программы");
-                    } else if (!new File(sub).canRead() && new File(sub).exists()) {
-                        System.out.println("Отказано в доступе при попытке прочтения файла. " +
-                                "Проверьте правильность введенных данных или введите " +
-                                "\"/quit\", чтобы выйти из программы");
-                        bool = false;
-                    } else if (!new File(sub).canWrite() && new File(sub).exists()) {
-                        System.out.println("У вас нет доступа к изменению этого файла. " +
-                                "Проверьте правильность введенных данных или введите " +
-                                "\"/quit\", чтобы выйти из программы");
-                        bool = false;
-                    }
-                    if (sub.equals("/quit")) {
-                        System.exit(0);
-                    }
-                } while (!new File(sub).exists());
-                subPath = sub;
-            } catch (NoSuchElementException e) {
-                System.out.println("Выход из программы");
-                System.exit(0);
-            }
-        }
-        ConsoleLineApp app = new ConsoleLineApp(subPath, new Date());
-        app.saveFlag = bool;
-        CollectionIO colIO = new CollectionIO(subPath);
-        app. saveFlag = colIO.loadCollection(app.col);
-        System.out.println("Вас приветствует приложение для работы с коллекцией" +
-                ". Чтобы узнать список доступных команд введите \"help\"");
-        String str;
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            try {
-                if(app.saveFlag) {
-                    colIO.saveCollection(app.col);
-                }
-            } catch (Throwable e) {
-                System.err.println("Произошла ошибка во время сохранения файла");
-            }
-        }));
-        try {
-            while (true) {
-                try {
-                    str = sc.nextLine();
-                    String command;
-                    try {
-                        command = commandIdentification(str);
-                    } catch (NullPointerException e) {
-                        System.out.println("Команда не распознана");
-                        continue;
-                    }
-                    str = str.replaceAll(command, "");
-                    switch (command) {
-                        case "show":
-                            app.show();
-                            break;
-                        case "add":
-                            app.add(Converter.fromConsoleToObject(str));
-                            break;
-                        case "add_if_min":
-                            app.addIfMin(Converter.fromConsoleToObject(str));
-                            break;
-                        case "remove":
-                            app.remove(Converter.fromConsoleToObject(str));
-                            break;
-                        case "info":
-                            app.info(app);
-                            break;
-                        case "load":
-                            colIO.loadCollection(app.col);
-                            break;
-                        case "save":
-                            colIO.saveCollection(app.col);
-                            break;
-                        case "filepath":
-                            app.showPath();
-                            break;
-                        case "help":
-                            app.help();
-                            break;
-                        case "quit":
-                        case "exit":
-                            System.exit(0);
-                            break;
-                        case "undefined":
-                            System.out.println("Команда не распознана. Чтобы увидеть список доступных команд введите \"help\"");
-                    }
-                } catch (NullPointerException e) {
-                    System.err.println("Неверный формат задания объекта");
-                }
-            }
-        } catch (NoSuchElementException e) {
-            System.out.println("Выход из программы");
-        }
+    private Set<Protagonist> col =  Collections.synchronizedSet(new LinkedHashSet<>());
 
-    }
-
-    /**
-     * Выводит путь файла, в котором содержится коллекция
-     */
-    private void showPath() {
-        System.out.println(path);
-    }
+//    public static void main(String[] args) {
+//        String subPath = "";
+//        boolean bool = true;
+//        if (System.getenv("DATAXML") != null && new File(System.getenv("DATAXML")).exists()) {
+//            subPath = System.getenv("DATAXML");
+//        } else {
+//            try {
+//                String sub;
+//                System.out.println("Файл в пути по умолчанию не найден. Введите путь самостоятельно" +
+//                        "или введите команду выхода \"/quit\"");
+//                do {
+//                    sub = sc.nextLine();
+//                    if (!new File(sub).exists() && !sub.equals("/quit")) {
+//                        System.out.println("Файл не существует. Проверьте правильность введенных данных или введите " +
+//                                "\"/quit\", чтобы выйти из программы");
+//                    } else if (!new File(sub).canRead() && new File(sub).exists()) {
+//                        System.out.println("Отказано в доступе при попытке прочтения файла. " +
+//                                "Проверьте правильность введенных данных или введите " +
+//                                "\"/quit\", чтобы выйти из программы");
+//                        bool = false;
+//                    } else if (!new File(sub).canWrite() && new File(sub).exists()) {
+//                        System.out.println("У вас нет доступа к изменению этого файла. " +
+//                                "Проверьте правильность введенных данных или введите " +
+//                                "\"/quit\", чтобы выйти из программы");
+//                        bool = false;
+//                    }
+//                    if (sub.equals("/quit")) {
+//                        System.exit(0);
+//                    }
+//                } while (!new File(sub).exists());
+//                subPath = sub;
+//            } catch (NoSuchElementException e) {
+//                System.out.println("Выход из программы");
+//                System.exit(0);
+//            }
+//        }
+//        ConsoleLineApp app = new ConsoleLineApp(new Date());
+//        app.saveFlag = bool;
+//        CollectionIO colIO = new CollectionIO(subPath, app);
+//        System.out.println("Вас приветствует приложение для работы с коллекцией" +
+//                ". Чтобы узнать список доступных команд введите \"help\"");
+//        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+//            try {
+//                if (app.saveFlag) {
+//                    colIO.saveCollection();
+//                }
+//            } catch (Throwable e) {
+//                System.err.println("Произошла ошибка во время сохранения файла");
+//            }
+//        }));
+//    }
 
     /**
      * показать объекты, которые на данный момент содержатся в коллекции
      */
-    private void show() {
+    public String show() {
         if (col.isEmpty()) {
-            System.out.println("Коллекция пуста");
+            return ("Коллекция пуста");
         } else {
             int i = 0;
+            StringBuilder result = new StringBuilder();
             for (Protagonist pr : col) {
-                System.out.println(++i);
-                System.out.println(pr.toString() + "\n");
+                result.append(++i + "\n");
+                result.append(pr.toString() + "\n");
             }
+            return result.toString();
         }
     }
 
@@ -171,22 +109,24 @@ public class ConsoleLineApp {
      *
      * @param pr объект, который будет добавлен в коллекцию
      */
-    private void add(Protagonist pr) {
+    public String add(Protagonist pr) {
         try {
             if (pr != null) {
                 if (col.contains(pr)) {
-                    System.out.println("Коллекция уже содержит такой объект");
+                    return ("Коллекция уже содержит такой объект");
                 } else {
                     col.add(pr);
                     if (col.contains(pr)) {
-                        System.out.println("Добавление элемента в коллекцию выполнено успешно");
+                        return ("Добавление элемента в коллекцию выполнено успешно");
+                    } else {
+                        return "Неизвестная ошибка, объект не был добавлен";
                     }
                 }
             } else {
-                System.err.println("Объект не распознан");
+                return ("Объект не распознан");
             }
         } catch (Exception e) {
-            System.err.println("Объект не распознан");
+            return ("Объект не распознан");
         }
     }
 
@@ -195,11 +135,11 @@ public class ConsoleLineApp {
      *
      * @param pr объект, который будет добавлен в коллекцию
      */
-    private void addIfMin(Protagonist pr) {
+    public String addIfMin(Protagonist pr) {
         try {
             if (pr != null) {
                 if (col.contains(pr)) {
-                    System.out.println("Коллекция уже содержит такой объект");
+                    return ("Коллекция уже содержит такой объект");
                 } else {
                     if (!col.isEmpty()) {
                         if (Collections.min(col).getName() != null && pr.getName() != null) {
@@ -207,30 +147,32 @@ public class ConsoleLineApp {
                                 col.add(pr);
                             }
                             if (col.contains(pr)) {
-                                System.out.println("Добавление элемента в коллекцию выполнено успешно");
+                                return ("Добавление элемента в коллекцию выполнено успешно");
                             } else {
-                                System.out.println("Объект не был добавлен в коллекцию, так как не являлся минимальным");
+                                return ("Объект не был добавлен в коллекцию, так как не являлся минимальным");
                             }
                         } else {
                             col.add(pr);
                             if (col.contains(pr)) {
-                                System.out.println("Добавление элемента в коллекцию выполнено успешно");
+                                return ("Добавление элемента в коллекцию выполнено успешно");
                             } else {
-                                System.out.println("Объект не был добавлен в коллекцию, так как не являлся минимальным");
+                                return ("Объект не был добавлен в коллекцию, так как не являлся минимальным");
                             }
                         }
                     } else {
                         col.add(pr);
                         if (col.contains(pr)) {
-                            System.out.println("Добавление элемента в коллекцию выполнено успешно");
+                            return ("Добавление элемента в коллекцию выполнено успешно");
+                        } else {
+                            return "Неизвестная ошибка, объект не был добавлен";
                         }
                     }
                 }
             } else {
-                System.err.println("Объект не распознан");
+                return ("Объект не распознан");
             }
         } catch (NumberFormatException | JsonSyntaxException e) {
-            System.out.println("Объект не распознан");
+            return ("Объект не распознан");
         }
     }
 
@@ -239,40 +181,40 @@ public class ConsoleLineApp {
      *
      * @param pr объект, отсутствие которого будет обеспечено в коллекции
      */
-    private void remove(Protagonist pr) {
+    public String remove(Protagonist pr) {
         try {
             if (pr != null) {
                 if (!col.contains(pr)) {
-                    System.out.println("Коллекция не содержит такой объект");
+                    return ("Коллекция не содержит такой объект");
                 } else {
                     col.remove(pr);
                     if (!col.contains(pr)) {
-                        System.out.println("Удаление элемента из коллекции выполнено успешно");
+                        return ("Удаление элемента из коллекции выполнено успешно");
+                    } else {
+                        return "Неизвестная ошибка, объект не был добавлен";
                     }
                 }
             } else {
-                System.err.println("Объект не распознан");
+                return ("Объект не распознан");
             }
         } catch (JsonSyntaxException | NumberFormatException e) {
-            System.out.println("Объект не распознан");
+            return ("Объект не распознан");
         }
     }
 
     /**
      * Выводит информацию о коллекции
      */
-    private void info(ConsoleLineApp app) {
-        System.out.println("Тип коллекции - LinkedHashSet;\nКоличество элементов = " + col.size() + ";\n" +
+    public String info(ConsoleLineApp app) {
+        return ("Тип коллекции - LinkedHashSet;\nКоличество элементов = " + col.size() + ";\n" +
                 "Дата инициализации: " + app.date);
-        System.out.print("Путь к файлу коллекции:");
-        showPath();
     }
 
     /**
      * Выводит сообщение о доступных функциях программы
      */
-    private void help() {
-        System.out.println("Список доступных команд:\nshow - вывести содержимое " +
+    public String help() {
+        return ("Список доступных команд:\nshow - вывести содержимое " +
                 "коллекции\ninfo - получить информацию о коллекции\nload - загрузить коллекцию из файла\n" +
                 "save - сохранить коллекцию в файл\nquit - выйти из консольного приложения\nadd - добавить " +
                 "элемет в коллекцию\nadd_if_min - " +
@@ -298,16 +240,25 @@ public class ConsoleLineApp {
         );
     }
 
-    public ConsoleLineApp(String path, Date date) {
-        this.path = path;
+    public String importFile(Command command){
+        return new CollectionIO(command, this.getCol()).loadCollection();
+    }
+
+    public ConsoleLineApp(Date date) {
         this.date = date;
     }
 
-    private static String commandIdentification(String command) {
+    public static String commandIdentification(String command) {
+        String cmd;
+        try {
+            cmd = command.split(" ")[0];
+        } catch (ArrayIndexOutOfBoundsException e) {
+            return "undefined";
+        }
         if (command.equals("")) {
             return command;
         }
-        if (!Character.isAlphabetic((int) command.charAt(0))) {
+        if (!Character.isAlphabetic((int) cmd.charAt(0))) {
             return "undefined";
         }
         command = command.replaceAll(" ", "");
@@ -315,10 +266,10 @@ public class ConsoleLineApp {
             throw new NullPointerException();
         }
         if (command.contains("{")) {
-            command = command.substring(0, command.indexOf("{"));
+            cmd = command.substring(0, command.indexOf("{"));
         }
         for (String c : commands) {
-            if (command.equals(c)) {
+            if (cmd.equals(c)) {
                 return c;
 
             }
@@ -326,7 +277,66 @@ public class ConsoleLineApp {
         return "undefined";
     }
 
-    static Scanner getSc(){
-        return sc;
+    public Set<Protagonist> getCol() {
+        return col;
     }
+
+//    public static void commandExecution(ConsoleLineApp app, CollectionIO colIO){
+//        try {
+//            String str;
+//            while (true) {
+//                try {
+//                    str = sc.nextLine();
+//                    String command;
+//                    try {
+//                        command = commandIdentification(str);
+//                    } catch (NullPointerException e) {
+//                        System.out.println("Команда не распознана");
+//                        continue;
+//                    }
+//                    str = str.replaceAll(command, "");
+//                    switch (command) {
+//                        case "show":
+//                            app.show();
+//                            break;
+//                        case "add":
+//                            app.add(Converter.fromConsoleToObject(str));
+//                            break;
+//                        case "add_if_min":
+//                            app.addIfMin(Converter.fromConsoleToObject(str));
+//                            break;
+//                        case "remove":
+//                            app.remove(Converter.fromConsoleToObject(str));
+//                            break;
+//                        case "info":
+//                            app.info(app);
+//                            break;
+//                        case "load":
+//                            colIO.loadCollection(app.col);
+//                            break;
+//                        case "save":
+//                            colIO.saveCollection(app.col);
+//                            break;
+//                        case "filepath":
+//                            app.showPath();
+//                            break;
+//                        case "help":
+//                            app.help();
+//                            break;
+//                        case "quit":
+//                        case "exit":
+//                            System.exit(0);
+//                            break;
+//                        case "undefined":
+//                            System.out.println("Команда не распознана. Чтобы увидеть список доступных команд введите \"help\"");
+//                    }
+//                } catch (NullPointerException e) {
+//                    System.err.println("Неверный формат задания объекта");
+//                }
+//            }
+//        } catch (NoSuchElementException e) {
+//            System.out.println("Выход из программы");
+//        }
+//    }
+
 }

@@ -1,43 +1,50 @@
 package source;
 
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.LinkedHashSet;
+import java.io.*;
+import java.util.Arrays;
+import java.util.Collection;
 
-class CollectionIO {
-    private String path;
+public class CollectionIO {
+    private Command command;
+    private Collection<Protagonist> col;
 
-    CollectionIO(String path) {
-        this.path = path;
+    public CollectionIO(Command command, Collection<Protagonist> col) {
+        this.col = col;
+        this.command = command;
     }
 
     /**
      * Загружает данные из файла, считываемого программой из переменной окружения в коллекцию, которую получает на вход
-     *
-     * @param col коллекция, в которую будут записаны считанные из файла объекты
      */
-    boolean loadCollection(LinkedHashSet<Protagonist> col) {
+    public String loadCollection() {
         try {
             col.clear();
-            FileInputStream fis = new FileInputStream(path);
-            String text = "";
-            byte[] buffer = new byte[fis.available()];
-            BufferedInputStream bis = new BufferedInputStream(fis);
-            if (!(bis.read(buffer, 0, fis.available()) > 0)) {
-                System.out.println("Коллекция пуста");
-            }
-            StringBuilder sb = new StringBuilder(text);
-            for (byte b : buffer) {
-                sb.append((char) b);
+            String address;
+            StringBuilder sb;
+            if(command.getStringCommand().substring(0,6).equals("import")){
+                sb = new StringBuilder(command.getFileContent());
+            } else {
+                try {
+                    address = command.getStringCommand().split(" ")[1];
+                    FileInputStream fis = new FileInputStream(address);
+                    byte[] buffer = new byte[fis.available()];
+                    BufferedInputStream bis = new BufferedInputStream(fis);
+                    if (!(bis.read(buffer, 0, fis.available()) > 0)) {
+                        return("Файл пуст");
+                    }
+                    sb = new StringBuilder();
+                    for (byte b : buffer) {
+                        sb.append((char) b);
 
+                    }
+                } catch (ArrayIndexOutOfBoundsException e){
+                    return "Некорректное задание имени файла";
+                }
             }
             String[] ex = sb.toString().split("\n");
             ex[0] = "";
             ex[1] = "";
-            text = "";
-            sb = new StringBuilder(text);
+            sb = new StringBuilder();
             for (String i : ex) {
                 sb.append(i);
             }
@@ -48,32 +55,39 @@ class CollectionIO {
                 expressions[i] += "</protagonist>";
                 col.add(Converter.fromXmlToObject(expressions[i]));
             }
-            System.out.println("Коллекция была загружена успешно");
-            return true;
+            if(!col.isEmpty()){
+                return("Коллекция была загружена успешно");
+            } else {
+                return "Коллекция пуста";
+            }
         } catch (IOException e) {
-            System.err.println("При загрузке коллекции произошла ошибка. Проверьте формат файла, его наличие " +
+            return("При загрузке коллекции произошла ошибка. Проверьте формат файла, его наличие " +
                     "в нужной директории и наличие у пользователя прав на чтение данного файла");
         } catch (ArrayIndexOutOfBoundsException e) {
-            System.err.println("При загрузке коллекции произошла ошибка. Проверьте целостность файла");
+            return("При загрузке коллекции произошла ошибка. Проверьте целостность файла");
         }
-        return false;
     }
 
     /**
      * Сохраняет поданную на вход коллекцию в файл, определенный переменной окружения, в формате ХML
-     *
-     * @param col коллекция, которая будет сохранена в файл
      */
 
-    void saveCollection(LinkedHashSet<Protagonist> col) {
+    public String saveCollection() {
         try {
-            FileWriter fw = new FileWriter(path);
+            String address;
+            try {
+                address = command.getStringCommand().split(" ")[1];
+            } catch (ArrayIndexOutOfBoundsException e){
+                return "Некорректное задание имени файла";
+            }
+            FileWriter fw = new FileWriter(address);
             fw.write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
             fw.write("<collection>\n");
             StringBuilder t = new StringBuilder();
             StringBuilder s = new StringBuilder();
             for (Protagonist i : col) {
                 s.append(Converter.fromObjectToXml(i));
+
                 String[] arr = s.toString().split("\n");
                 s = new StringBuilder();
                 for (int j = 1; j < arr.length; j++) {
@@ -84,9 +98,13 @@ class CollectionIO {
             fw.write(t.toString());
             fw.write("</collection>");
             fw.flush();
-            System.out.println("Коллекция была успешно сохранена в файл " + path);
+            if(new File(address).exists()){
+                return("Коллекция была успешно сохранена в файл");
+            } else {
+                return ("Коллекция не была сохранена в файл");
+            }
         } catch (IOException e) {
-            System.err.println("При сохранении коллекции произошла ошибка. Проверьте формат файла, его " +
+            return("При сохранении коллекции произошла ошибка. Проверьте формат файла, его " +
                     "наличие в нужной директории и наличие у пользователя прав на запись данных в этот файл");
         }
     }

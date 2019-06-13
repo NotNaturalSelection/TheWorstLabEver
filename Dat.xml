@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<collection>
+    <protagonist>
+        <Name>Vovan</Name>
+        <Strength>0.0</Strength>
+        <Agility>0.0</Agility>
+        <Intelligence>0.0</Intelligence>
+        <Luck>0.0</Luck>
+        <wealth>0</wealth>
+        <LevelOfPain>0</LevelOfPain>
+        <ballCounter>0</ballCounter>
+        <Defence>0.0</Defence>
+    </protagonist>
+</collection>

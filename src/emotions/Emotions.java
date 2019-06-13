@@ -1,3 +1,5 @@
 package emotions;
 
-public enum Emotions {FEAR, ANGER, FUN, PAIN, LAUGHTER, HEARTACHE}
+import java.io.Serializable;
+
+public enum Emotions implements Serializable {FEAR, ANGER, FUN, PAIN, LAUGHTER, HEARTACHE}

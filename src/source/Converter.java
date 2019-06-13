@@ -10,14 +10,14 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Scanner;
 
-class Converter {
+public class Converter {
     /**
      * Преобразует строку, содержащую объект, представленный в формате XML, в объект класса Protagonist
      *
      * @param xmldata строка, содержащяя объект в формате XML. Подается на вход без пробелов между тегами
      * @return объект, полученный из строки
      */
-    static Protagonist fromXmlToObject(String xmldata) {
+    public static Protagonist fromXmlToObject(String xmldata) {
         try {
             JAXBContext jaxbContext = JAXBContext.newInstance(Protagonist.class);
             Unmarshaller un = jaxbContext.createUnmarshaller();
@@ -35,7 +35,7 @@ class Converter {
      * @return строка, содержащяя объект представленный в формате XML
      */
 
-    static String fromObjectToXml(Protagonist pr) {
+    public static String fromObjectToXml(Protagonist pr) {
         try {
             StringWriter sw = new StringWriter();
             JAXBContext context = JAXBContext.newInstance(Protagonist.class);
@@ -53,7 +53,7 @@ class Converter {
      * @param bPart строка, в которой могут частично располагаться команды.
      * @return возвращает объект класса Protagonist
      */
-    static Protagonist fromConsoleToObject(String bPart) {
+    public static Protagonist fromConsoleToObject(String bPart, Scanner scanner) {
         Gson gson = new Gson();
         Protagonist pr1;
         int braceCounter = 0;
@@ -73,7 +73,7 @@ class Converter {
         str.append(bPart);
         while (braceCounter > 0 || braceCounterFlag) {
             braceCounterFlag = false;
-            String substr = ConsoleLineApp.getSc().nextLine();
+            String substr = scanner.nextLine();
             str.append(substr.replaceAll("\n", ""));
             if (substr.contains("{")) {
                 braceCounter++;
