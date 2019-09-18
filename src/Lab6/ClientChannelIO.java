@@ -76,8 +76,6 @@ public class ClientChannelIO {
         return receiveResponse().toString().equals("test");
     }
 
-    //todo проверять соединение каждый раз при отправлении команды, переприсоединять, если сервер стал доступен
-
     boolean connectionAttempt(String host, int port) {
         if (!isConnected) {
             System.out.println("Установка соединения с сервером");

@@ -1,16 +1,15 @@
 package source;
 
-import javax.xml.bind.annotation.*;
 
 import emotions.Emotions;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.Objects;
 
 import static java.lang.Math.abs;
 
-@XmlType(name = "Protagonist")
-@XmlRootElement
 public class Protagonist implements Comparable<Protagonist>, Serializable {
     private String gender;
     private double Strength;
@@ -23,38 +22,41 @@ public class Protagonist implements Comparable<Protagonist>, Serializable {
     private double LevelOfPain;
     private int ballCounter;
     private double Defence;
-    private Emotions emotion;
-    private Date date;
+    private LocalDateTime localDateTime;
 
     public Protagonist() {
+        localDateTime = LocalDateTime.now();
     }
 
     public Protagonist(String gender,
+                       String name,
                        double strength,
                        double agility,
                        double intelligence,
                        double luck,
-                       Location location,
-                       String name,
                        int wealth,
-                       double levelOfPain,
                        int ballCounter,
+                       double levelOfPain,
                        double defence,
-                       Emotions emotion,
-                       Date date) {
+//                       Location location,
+                       LocalDateTime ldt) {
+
         this.gender = gender;
         Strength = strength;
         Agility = agility;
         Intelligence = intelligence;
         Luck = luck;
-        this.location = location;
+//        this.location = location;
         Name = name;
         this.wealth = wealth;
         LevelOfPain = levelOfPain;
         this.ballCounter = ballCounter;
         Defence = defence;
-        this.emotion = emotion;
-        this.date = date;
+        if(ldt != null){
+            localDateTime = ldt;
+        } else {
+            localDateTime = LocalDateTime.now();
+        }
     }
 
     @Override
@@ -83,12 +85,11 @@ public class Protagonist implements Comparable<Protagonist>, Serializable {
         }
         Protagonist F = (Protagonist) obj;
         boolean semiResult = (this.Strength == F.Strength && this.Agility == F.Agility && this.Intelligence == F.Intelligence &&
-                this.Luck == F.Luck && this.wealth == F.wealth && this.emotion == ((Protagonist) obj).emotion
+                this.Luck == F.Luck && this.wealth == F.wealth
                 && this.LevelOfPain == F.LevelOfPain && this.ballCounter == F.ballCounter);
         boolean FName = false;
         boolean Fgender = false;
         boolean Flocation = false;
-        boolean Femotion = false;
 //        boolean Fdate = false;
         if (Name == null) {
             if (F.Name == null) {
@@ -111,13 +112,6 @@ public class Protagonist implements Comparable<Protagonist>, Serializable {
         } else {
             Flocation = location.equals(F.location);
         }
-        if (emotion == null) {
-            if (F.emotion == null) {
-                Femotion = true;
-            }
-        } else {
-            Femotion = emotion.equals(F.emotion);
-        }
 //        if (date == null) {
 //            if (F.date == null) {
 //                Fdate = true;
@@ -125,15 +119,15 @@ public class Protagonist implements Comparable<Protagonist>, Serializable {
 //        } else {
 //            Fdate = date.equals(F.date);
 //        }
-        return semiResult && Femotion && Fgender && Flocation && FName ;//&&Fdate
+        return semiResult && Fgender && Flocation && FName ;//&&Fdate
     }
 
     @Override
     public String toString() {
         return "Name = " + Name + ";\ngender = " + gender + ";\nStrength = " + Strength + ";\nAgility = " + Agility + ";\nIntelligence = " + Intelligence +
                 ";\nLuck = " + Luck + ";\nwealth = " + wealth + ";\nLevelOfPain = "
-                + LevelOfPain + ";\nballcounter = " + ballCounter + ";\nDefence = " + Defence + ";\n" +
-                "emotion = " + emotion + ";\nlocation = " + location + ";\nDate = " + date + ";\n";
+                + LevelOfPain + ";\nballcounter = " + ballCounter + ";\nDefence = " + Defence +
+                ";\nlocation = " + location + ";\n";
     }
 
     @Override
@@ -161,11 +155,43 @@ public class Protagonist implements Comparable<Protagonist>, Serializable {
         Name = name;
     }
 
-    public Date getDate() {
-        return date;
+    public String getGender() {
+        return gender;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public double getStrength() {
+        return Strength;
+    }
+
+    public double getAgility() {
+        return Agility;
+    }
+
+    public double getIntelligence() {
+        return Intelligence;
+    }
+
+    public double getLuck() {
+        return Luck;
+    }
+
+    public int getWealth() {
+        return wealth;
+    }
+
+    public double getLevelOfPain() {
+        return LevelOfPain;
+    }
+
+    public int getBallCounter() {
+        return ballCounter;
+    }
+
+    public double getDefence() {
+        return Defence;
+    }
+
+    public LocalDateTime getLocalDateTime() {
+        return localDateTime;
     }
 }

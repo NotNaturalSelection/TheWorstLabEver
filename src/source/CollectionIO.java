@@ -53,7 +53,7 @@ public class CollectionIO {
                 expressions[i] = expressions[i].replaceAll(" ", "");
                 expressions[i] = expressions[i].replaceAll("</collection>", "");
                 expressions[i] += "</protagonist>";
-                col.add(Converter.fromXmlToObject(expressions[i]));
+//                col.add(Converter.fromXmlToObject(expressions[i])); РАСКОММЕНТИТЬ, ЕСЛИ ПОНАДОБИТСЯ
             }
             if(!col.isEmpty()){
                 return("Коллекция была загружена успешно");
@@ -86,7 +86,7 @@ public class CollectionIO {
             StringBuilder t = new StringBuilder();
             StringBuilder s = new StringBuilder();
             for (Protagonist i : col) {
-                s.append(Converter.fromObjectToXml(i));
+//                s.append(Converter.fromObjectToXml(i)); РАСКОММЕНТИТЬ ЕСЛИ ПОНАДОБИТСЯ
 
                 String[] arr = s.toString().split("\n");
                 s = new StringBuilder();

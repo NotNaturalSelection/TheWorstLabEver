@@ -1,7 +1,7 @@
 <component name="libraryTable">
-  <library name="gson-2.2.2">
+  <library name="activation">
     <CLASSES>
-      <root url="jar://$USER_HOME$/IntelliJ_Idea/gson-2.2.2.jar!/" />
+      <root url="jar://$USER_HOME$/libs/activation.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

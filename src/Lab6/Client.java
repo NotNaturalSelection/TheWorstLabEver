@@ -45,8 +45,6 @@ public class Client {
 
         System.out.println(clientIO.receiveResponse());
 
-//        System.out.println(clientIO.checkConnection()); todo delete
-
         while (true) {
             String str;
             try {

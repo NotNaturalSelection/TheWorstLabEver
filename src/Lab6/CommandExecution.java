@@ -41,7 +41,7 @@ public class CommandExecution extends Thread {
                 cmd = cmd.trim();
                 switch (cmd) {
                     case "import":
-                        tcpIO.sendResponse(Response.createStringResponse(app.importFile(command)));//todo допилить import
+                        tcpIO.sendResponse(Response.createStringResponse(app.importFile(command)));
                         break;
                     case "":
                         tcpIO.sendResponse(Response.createStringResponse(""));

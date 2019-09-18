@@ -8,6 +8,8 @@ public class Command implements Serializable {
     private String command;
     private Protagonist object;
     private String fileContent;
+    private String login;
+    private String password;
 
     public Command(String command, Protagonist object, String file) {
         this.command = command;
@@ -37,5 +39,21 @@ public class Command implements Serializable {
 
     public void setFileContent(String file) {
         this.fileContent = file;
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

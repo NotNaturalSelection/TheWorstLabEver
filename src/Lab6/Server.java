@@ -48,7 +48,7 @@ public class Server extends Thread {
             }
             this.interrupt();
         } catch (IOException e) {
-            e.printStackTrace(); // todo исправить по окончании
+            System.out.println(e.getMessage());
         }
     }
 

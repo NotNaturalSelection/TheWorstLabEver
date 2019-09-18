@@ -1,12 +1,7 @@
 package source;
-
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 import java.util.Objects;
-@XmlType(name = "Location")
-@XmlRootElement
+
 public class Location implements Serializable {
     private int x;
     private int y;
