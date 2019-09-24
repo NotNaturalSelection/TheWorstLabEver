@@ -23,6 +23,15 @@ public class Protagonist implements Comparable<Protagonist>, Serializable {
     private int ballCounter;
     private double Defence;
     private LocalDateTime localDateTime;
+    private String owner;
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
 
     public Protagonist() {
         localDateTime = LocalDateTime.now();
@@ -38,20 +47,23 @@ public class Protagonist implements Comparable<Protagonist>, Serializable {
                        int ballCounter,
                        double levelOfPain,
                        double defence,
-//                       Location location,
-                       LocalDateTime ldt) {
+                       LocalDateTime ldt,
+                       Location location,
+                       String owner) {
+
 
         this.gender = gender;
         Strength = strength;
         Agility = agility;
         Intelligence = intelligence;
         Luck = luck;
-//        this.location = location;
+        this.location = location;
         Name = name;
         this.wealth = wealth;
         LevelOfPain = levelOfPain;
         this.ballCounter = ballCounter;
         Defence = defence;
+        this.owner = owner;
         if(ldt != null){
             localDateTime = ldt;
         } else {
@@ -87,16 +99,23 @@ public class Protagonist implements Comparable<Protagonist>, Serializable {
         boolean semiResult = (this.Strength == F.Strength && this.Agility == F.Agility && this.Intelligence == F.Intelligence &&
                 this.Luck == F.Luck && this.wealth == F.wealth
                 && this.LevelOfPain == F.LevelOfPain && this.ballCounter == F.ballCounter);
+        boolean Fowner = false;
         boolean FName = false;
         boolean Fgender = false;
         boolean Flocation = false;
-//        boolean Fdate = false;
         if (Name == null) {
             if (F.Name == null) {
                 FName = true;
             }
         } else {
             FName = Name.equals(F.Name);
+        }
+        if (owner == null) {
+            if (F.owner == null) {
+                FName = true;
+            }
+        } else {
+            Fowner = owner.equals(F.owner);
         }
         if (gender == null) {
             if (F.gender == null) {
@@ -112,14 +131,7 @@ public class Protagonist implements Comparable<Protagonist>, Serializable {
         } else {
             Flocation = location.equals(F.location);
         }
-//        if (date == null) {
-//            if (F.date == null) {
-//                Fdate = true;
-//            }
-//        } else {
-//            Fdate = date.equals(F.date);
-//        }
-        return semiResult && Fgender && Flocation && FName ;//&&Fdate
+        return semiResult && Fgender && Flocation && FName && Fowner ;
     }
 
     @Override

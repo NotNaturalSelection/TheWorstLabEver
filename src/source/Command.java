@@ -11,11 +11,19 @@ public class Command implements Serializable {
     private String login;
     private String password;
 
-    public Command(String command, Protagonist object, String file) {
+    public Command(String command, Protagonist object, String file, String login, String password) {
         this.command = command;
         this.object = object;
         this.fileContent = file;
+        this.login = login;
+        this.password = password;
     }
+
+//    public Command(String command, Protagonist object, String file) {
+//        this.command = command;
+//        this.object = object;
+//        this.fileContent = file;
+//    }
 
     public String getStringCommand() {
         return command;

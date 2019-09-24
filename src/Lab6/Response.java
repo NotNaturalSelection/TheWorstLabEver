@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 public class Response implements Serializable {
     private String message;
     private Set<Protagonist> collection;
+    private boolean LoggingResponse;
 
     private Response(String message, Set<Protagonist> collection) {
         this.message = message;
@@ -28,9 +29,24 @@ public class Response implements Serializable {
         return new Response(message, collection);
     }
 
+    static Response createLoggingResponse(String message){
+        return Response.createStringResponse(message).withLogging();
+    }
     @Override
     public String toString() {
         return message.equals("collection") ? collection.toString() : message;
     }
 
+    Response withLogging(){
+        this.setLoggingResponse(true);
+        return this;
+    }
+
+    public boolean isLoggingResponse() {
+        return LoggingResponse;
+    }
+
+    public void setLoggingResponse(boolean loggingResponse) {
+        LoggingResponse = loggingResponse;
+    }
 }

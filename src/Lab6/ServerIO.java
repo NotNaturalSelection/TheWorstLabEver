@@ -19,14 +19,14 @@ class ServerIO {
             oos.writeObject(response);
             oos.flush();
             dos.write(byteArray.toByteArray());
-        } catch (IOException ignore) {}
+        } catch (IOException ignored) {}
     }
 
     Command receiveCommand() {
         try {
             return (Command) new ObjectInputStream(dis).readObject();
         } catch (Exception e) {
-            return new Command("Клиент отсоединился", null, null);
+            return new Command("Клиент отсоединился", null, null, "", "");
         }
     }
 }

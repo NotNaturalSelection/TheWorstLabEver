@@ -3,12 +3,7 @@ package Lab6;
 import source.Command;
 import source.ConsoleLineApp;
 import source.Converter;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.nio.channels.*;
 import java.util.*;
@@ -23,8 +18,6 @@ public class Client {
             System.exit(0);
         }
         SocketChannel channel;
-        boolean connection = false;
-
         while (true) {
             try {
                 channel = SocketChannel.open();
@@ -39,12 +32,52 @@ public class Client {
 
             }
         }
-
         ClientChannelIO clientIO = new ClientChannelIO(args[0], Integer.parseInt(args[1]), channel);
+        boolean auth = false;
 
 
-        System.out.println(clientIO.receiveResponse());
 
+        //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+        Response rs = clientIO.receiveResponse();
+        System.out.println(rs.toString());
+        while (!auth) {
+            System.out.println("Для авторизации введите \"auth\", для регистрации - \"reg\", для выхода - \"quit\"");
+            String line = scanner.nextLine();
+            clientIO.sendCommand(new Command("", null, null, line, ""));
+            rs = clientIO.receiveResponse();
+            switch (rs.toString()){
+                case "auth":
+                    System.out.println("Введите логин");
+                    String login = scanner.nextLine();
+                    System.out.println("Введите пароль для "+login);
+                    String password = scanner.nextLine();
+                    clientIO.sendCommand(new Command("", null,null, login, password));
+                    rs = clientIO.receiveResponse();
+                    System.out.println(rs.toString());
+                    if(!rs.isLoggingResponse()){
+                        auth = true;
+                        clientIO.setClientLogged(login, password);
+                    }
+                    break;
+                case "reg":
+                    System.out.println("Введите адрес электронной почты, на который будет отправлено письмо с вашими данными.");
+                    String log = scanner.nextLine();
+                    clientIO.sendCommand(new Command("",null,null,log,""));
+                    System.out.println(clientIO.receiveResponse());
+                    break;
+                case "Команда не распознана":
+                    System.out.println("Команда не распознана. Используйте \"reg\", " +
+                            "чтобы создать новую учетную запись или \"auth\", чтобы войти в существующую. Для выхода введите \"quit\"");
+                    break;
+                case "Клиент отсоединился":
+                    System.exit(0);
+                    break;
+            }
+        }
+        //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+//        System.out.println(clientIO.receiveResponse().toString());
         while (true) {
             String str;
             try {
@@ -56,12 +89,12 @@ public class Client {
 
             if (argumentCommands.contains(ConsoleLineApp.commandIdentification(str))) {
                 if (ConsoleLineApp.commandIdentification(str).equals("import")) {
-                    command = importFile(str);
+                    command = clientIO.importFile(str);
                 } else {
-                    command = new Command(str, Converter.fromConsoleToObject(str, scanner), null);
+                    command = new Command(str, Converter.fromConsoleToObject(str, scanner), null, clientIO.getClientLogin(), clientIO.getClientPassword());
                 }
             } else {
-                command = new Command(str, null, null);
+                command = new Command(str, null, null, clientIO.getClientLogin(), clientIO.getClientPassword());
             }
 
             if (command.getStringCommand().equals("quit") || command.getStringCommand().equals("exit")) {
@@ -80,28 +113,4 @@ public class Client {
             }
         }
     }
-
-    static Command importFile(String str) {
-        File file;
-        try {
-            file = new File(str.split(" ")[1]);
-            try {
-                FileInputStream fis = new FileInputStream(file);
-                byte[] fileContentBuffer = new byte[fis.available()];
-                System.out.println("Отправлен файл размером " + fis.read(fileContentBuffer) + " байт");
-                return new Command(str, null, new String(fileContentBuffer));
-            } catch (FileNotFoundException e) {
-                System.out.println("Указанный вами файл не найден");
-                return new Command("", null, null);
-            } catch (IOException e) {
-                System.out.println("Ошибка во время выполнения команды");
-                return new Command("", null, null);
-
-            }
-        } catch (ArrayIndexOutOfBoundsException e) {
-            System.out.println("Неверный формат команды");
-            return new Command("", null, null);
-        }
-    }
-
 }

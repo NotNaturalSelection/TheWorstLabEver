@@ -19,6 +19,12 @@ public class ClientChannelIO {
 
     private String host;
 
+    private String clientLogin;
+
+    private String clientPassword;
+
+    boolean isClientLogged = false;
+
     public ClientChannelIO(String host, int port, SocketChannel channel) {
         isConnected = true;
         this.channel = channel;
@@ -72,7 +78,7 @@ public class ClientChannelIO {
     }
 
     boolean checkConnection() {
-        sendCommand(new Command("test", null, null));
+        sendCommand(new Command("test", null, null, "", ""));
         return receiveResponse().toString().equals("test");
     }
 
@@ -92,6 +98,43 @@ public class ClientChannelIO {
         } else {
             return isConnected;
         }
+    }
+
+    public String getClientLogin() {
+        return clientLogin;
+    }
+
+    public String getClientPassword() {
+        return clientPassword;
+    }
+
+    Command importFile(String str) {
+        File file;
+        try {
+            file = new File(str.split(" ")[1]);
+            try {
+                FileInputStream fis = new FileInputStream(file);
+                byte[] fileContentBuffer = new byte[fis.available()];
+                System.out.println("Отправлен файл размером " + fis.read(fileContentBuffer) + " байт");
+                return new Command(str, null, new String(fileContentBuffer),clientLogin, clientPassword);
+            } catch (FileNotFoundException e) {
+                System.out.println("Указанный вами файл не найден");
+                return new Command("", null, null,clientLogin, clientPassword);
+            } catch (IOException e) {
+                System.out.println("Ошибка во время выполнения команды");
+                return new Command("", null, null,clientLogin, clientPassword);
+
+            }
+        } catch (ArrayIndexOutOfBoundsException e) {
+            System.out.println("Неверный формат команды");
+            return new Command("", null, null,clientLogin, clientPassword);
+        }
+    }
+
+    public void setClientLogged(String login, String password){
+        clientLogin = login;
+        clientPassword = password;
+        isClientLogged = true;
     }
 
     public SocketChannel getChannel() {

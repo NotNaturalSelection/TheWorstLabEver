@@ -48,4 +48,8 @@ public class MailSending {
             return false;
         }
     }
+
+    public static boolean isMailAddressCorrect(String address){
+        return address.indexOf('@') > 0 && address.indexOf('.') > address.indexOf('@') && address.indexOf('.') < address.length() - 1;
+    }
 }
