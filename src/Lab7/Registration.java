@@ -1,10 +1,6 @@
 package Lab7;
 
 import org.apache.commons.codec.digest.DigestUtils;
-
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
 import java.util.Random;
 
 public class Registration {
