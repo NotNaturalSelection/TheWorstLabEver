@@ -1,21 +1,19 @@
 package Lab7;
 
+import source.ConsoleLineApp;
 import source.Location;
 import source.Protagonist;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class SQLUtils {
 
-    public static void main(String[] args) {
-        DBConnection dbc = new DBConnection();
-        SQLUtils sqlUtils = new SQLUtils(dbc);
-        System.out.println(sqlUtils.parseAccountsResultSet(sqlUtils.getUsersTable()));
-    }
+//    public static void main(String[] args) {
+//        DBConnection dbc = new DBConnection();
+//        SQLUtils sqlUtils = new SQLUtils(dbc);
+//        System.out.println(sqlUtils.parseAccountsResultSet(sqlUtils.getUsersTable()));
+//    }
 
     private Connection connection;
 
@@ -23,21 +21,29 @@ public class SQLUtils {
         this.connection = dbc.getConnection();
     }
 
-    public boolean saveCollection( List<Protagonist> list){
-        boolean result = false;
+    public String loadCollection(ConsoleLineApp app){
         try {
-            connection.createStatement().executeUpdate("delete from protagonists;");
-            for (Protagonist pr: list) {
+            Set<Protagonist> set = app.getCol();
+            set.addAll(parseResultSet(Objects.requireNonNull(getAllItems())));
+            return "Коллекция была загружена успешно";
+        } catch (NullPointerException e){
+            return "Произошла ошибка во время загрузки коллекции";
+        }
+    }
+    public String saveCollection( Set<? extends Protagonist> set){
+        try {
+            connection.createStatement().executeUpdate("delete from lab.protagonists.protagonists;");
+            for (Protagonist pr: set) {
                 insertQuery(pr);
             }
-            result = true;
+            return "Коллекция была сохранена успешно";
         } catch (SQLException ignored) {}
-        return result;
+        return "Во время сохранения коллекции произошла ошибка";
     }
 
-    public ResultSet getAllItems(){
+    private ResultSet getAllItems(){
         try {
-            return connection.createStatement().executeQuery("select * from protagonists;");
+            return connection.createStatement().executeQuery("select * from lab.protagonists.protagonists;");
         } catch (SQLException e) {
             return null;
         }
@@ -45,16 +51,16 @@ public class SQLUtils {
 
     public ResultSet getUsersTable(){
         try{
-            return connection.createStatement().executeQuery("select * from accounts;");
+            return connection.createStatement().executeQuery("select * from lab.accounts.accounts;");
         } catch (SQLException e){
             e.printStackTrace();
             return null;
         }
     }
 
-    public void insertQuery(Protagonist pr) {
+    void insertQuery(Protagonist pr) {
         try {
-            PreparedStatement statement = connection.prepareStatement("INSERT into protagonists values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+            PreparedStatement statement = connection.prepareStatement("insert into lab.protagonists.protagonists values (?,?,?,?,?,?,?,?,?,?,?,?,?)");
             statement.setString(1, pr.getGender());
             statement.setString(2, pr.getName());
             statement.setFloat(3,(float)pr.getStrength());
@@ -66,20 +72,33 @@ public class SQLUtils {
             statement.setFloat(9,(float)pr.getLevelOfPain());
             statement.setFloat(10,(float)pr.getDefence());
             statement.setTimestamp(11,Timestamp.valueOf(pr.getLocalDateTime()));
-            statement.setInt(12, pr.getLocation().getX());
-            statement.setInt(13, pr.getLocation().getY());
-            statement.setInt(14, pr.getLocation().getZ());
-            statement.setString(15,pr.getOwner());
+            if (pr.getLocation() != null) {
+                Location l = pr.getLocation();
+                statement.setString(12, l.getX()+","+l.getY()+","+l.getZ());
+            } else {
+                statement.setNull(12, Types.VARCHAR);
+            }
+            statement.setString(13,pr.getOwner());
             statement.executeUpdate();
-        } catch (SQLException ignored) {
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
-    public List<Protagonist> parseResultSet(ResultSet rs){
-        List<Protagonist> list = new ArrayList<>();
+    private Set<Protagonist> parseResultSet(ResultSet rs){
+        Set<Protagonist> set = new HashSet<>();
         try {
             while(rs.next()){
-                list.add(new Protagonist(
+                Location l = null;
+                if(rs.getString(12) != null){
+                    String[] array = rs.getString(12).split(",");
+                    try {
+                        l = new Location(Integer.parseInt(array[0]), Integer.parseInt(array[1]), Integer.parseInt(array[2]));
+                    } catch (ArrayIndexOutOfBoundsException e){
+                        l = null;
+                    }
+                }
+                set.add(new Protagonist(
                         rs.getString(1),
                         rs.getString(2),
                         rs.getFloat(3),
@@ -91,12 +110,12 @@ public class SQLUtils {
                         rs.getFloat(9),
                         rs.getFloat(10),
                         rs.getTimestamp(11).toLocalDateTime(),
-                        new Location(rs.getInt(12), rs.getInt(13), rs.getInt(14)),
-                        rs.getString(15)
+                        l,
+                        rs.getString(13)
                 ));
             }
         } catch (SQLException ignored) {}
-        return list;
+        return set;
     }
 
     public Map<String, String> parseAccountsResultSet(ResultSet rs){
@@ -122,7 +141,7 @@ public class SQLUtils {
                     "ballcounter int ," +
                     "levelOfPain float ," +
                     "defence float," +
-                    "localdatetime timestamptz," +
+                    "localDateTime timestamptz," +
                     "x int," +
                     "y int," +
                     "z int," +
@@ -168,28 +187,12 @@ public class SQLUtils {
 
     public void addNewAccount(String login, String password){
         try {
-            PreparedStatement st = connection.prepareStatement("insert into accounts values (?, ?)");
+            PreparedStatement st = connection.prepareStatement("insert into lab.accounts.accounts values (?, ?)");
             st.setString(1, login);
             st.setString(2, Registration.sha1Coding(password));
             st.executeUpdate();
-//            connection.prepareStatement().executeUpdate("insert into accounts values ("+login+", "+Registration.md5Apache(password)+");");
         } catch (SQLException ignored) {
         }
     }
 
-//    String getStringOfObjectParametersFromResultSet(ResultSet rs) {
-//        StringBuilder result = new StringBuilder();
-//        try {
-//            while (rs.next()) {
-//                for (int i = 1; i < 12; i++) {
-//                    result.append(rs.getString(i));
-//                    result.append(" ");
-//                }
-//                result.append("\n");
-//            }
-//        } catch (SQLException e) {
-////            e.printStackTrace();
-//        }
-//        return result.toString();
-//    }
 }

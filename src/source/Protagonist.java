@@ -1,12 +1,7 @@
 package source;
 
-
-import emotions.Emotions;
-
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.Objects;
 
 import static java.lang.Math.abs;
 
@@ -29,7 +24,7 @@ public class Protagonist implements Comparable<Protagonist>, Serializable {
         return owner;
     }
 
-    public void setOwner(String owner) {
+    void setOwner(String owner) {
         this.owner = owner;
     }
 
@@ -133,13 +128,21 @@ public class Protagonist implements Comparable<Protagonist>, Serializable {
         }
         return semiResult && Fgender && Flocation && FName && Fowner ;
     }
+//
+//    public boolean ownerEquals(Protagonist pr){
+//        if (this.owner != null) {
+//            return this.owner.equals(pr.owner);
+//        } else {
+//            return pr.owner == null;
+//        }
+//    }
 
     @Override
     public String toString() {
         return "Name = " + Name + ";\ngender = " + gender + ";\nStrength = " + Strength + ";\nAgility = " + Agility + ";\nIntelligence = " + Intelligence +
                 ";\nLuck = " + Luck + ";\nwealth = " + wealth + ";\nLevelOfPain = "
                 + LevelOfPain + ";\nballcounter = " + ballCounter + ";\nDefence = " + Defence +
-                ";\nlocation = " + location + ";\n";
+                ";\nlocation = " + location + ";\n" + "owner = "+owner;
     }
 
     @Override

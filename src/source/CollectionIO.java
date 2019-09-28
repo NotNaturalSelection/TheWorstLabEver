@@ -1,7 +1,6 @@
 package source;
 
 import java.io.*;
-import java.util.Arrays;
 import java.util.Collection;
 
 public class CollectionIO {
@@ -16,7 +15,7 @@ public class CollectionIO {
     /**
      * Загружает данные из файла, считываемого программой из переменной окружения в коллекцию, которую получает на вход
      */
-    public String loadCollection() {
+    String loadCollection() {
         try {
             col.clear();
             String address;

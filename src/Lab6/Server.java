@@ -6,8 +6,6 @@ import source.ConsoleLineApp;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Map;
 
 public class Server extends Thread {
@@ -88,7 +86,8 @@ public class Server extends Thread {
             }
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-
+            SQLUtils utils = new SQLUtils(new DBConnection());
+            utils.loadCollection(app);
             while (true) {
                 Command command = serverIO.receiveCommand();
                 String line = command.getStringCommand();

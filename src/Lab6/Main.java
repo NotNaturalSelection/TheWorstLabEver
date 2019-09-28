@@ -1,5 +1,7 @@
 package Lab6;
 
+import Lab7.DBConnection;
+import Lab7.SQLUtils;
 import source.ConsoleLineApp;
 
 import java.net.InetAddress;
@@ -17,6 +19,13 @@ public class Main {
                 InetAddress inetAddress = InetAddress.getByName("localhost");
                 ServerSocket serverSocket = new ServerSocket(port, 0, inetAddress);
                 ConsoleLineApp app = new ConsoleLineApp(new Date());
+                SQLUtils utils = new SQLUtils(new DBConnection());
+                if(!utils.isTableOfAccountsExists()){
+                    utils.createTableAccounts();
+                }
+                if(!utils.isTableOfProtagonistsExists()){
+                    utils.createTableProtagonists();
+                }
                 while (true) {
                     Socket socket = serverSocket.accept();
                     new Server().setSocket(socket, numberOfClient++, app);
@@ -24,7 +33,7 @@ public class Main {
             } catch (Exception e) {
                 System.out.println("Порт или хост недоступен");
             }
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
     }
 }

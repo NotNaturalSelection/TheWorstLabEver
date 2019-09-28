@@ -77,7 +77,6 @@ public class Client {
         //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
-//        System.out.println(clientIO.receiveResponse().toString());
         while (true) {
             String str;
             try {

@@ -1,21 +1,23 @@
 package Lab6;
 
+import Lab7.DBConnection;
+import Lab7.SQLUtils;
 import source.*;
 
 import java.io.DataOutputStream;
-import java.util.Date;
 import java.util.NoSuchElementException;
-import java.util.Scanner;
 
 public class CommandExecution extends Thread {
     private Command command;
     private DataOutputStream dos;
     private ConsoleLineApp app;
+    private SQLUtils sqlUtils;
 
     CommandExecution(Command command, DataOutputStream dos, ConsoleLineApp app) {
         this.command = command;
         this.dos = dos;
         this.app = app;
+        this.sqlUtils = new SQLUtils(new DBConnection());
         this.start();
     }
 
@@ -25,11 +27,10 @@ public class CommandExecution extends Thread {
         this.interrupt();
     }
 
-    void execution(Command command) {
+    private void execution(Command command) {
         try {
             try {
                 ServerIO tcpIO = new ServerIO(null, dos);
-                CollectionIO colIO = new CollectionIO(command, app.getCol());
                 String cmd;
                 try {
                     cmd = ConsoleLineApp.commandIdentification(command.getStringCommand());
@@ -50,22 +51,22 @@ public class CommandExecution extends Thread {
                         tcpIO.sendResponse(Response.createFullResponse("collection", app.getCol()));
                         break;
                     case "add":
-                        tcpIO.sendResponse(Response.createStringResponse(app.add(command.getObject())));
+                        tcpIO.sendResponse(Response.createStringResponse(app.add(command.getObject(),command.getLogin())));
                         break;
                     case "add_if_min":
-                        tcpIO.sendResponse(Response.createStringResponse(app.addIfMin(command.getObject())));
+                        tcpIO.sendResponse(Response.createStringResponse(app.addIfMin(command.getObject(), command.getLogin())));
                         break;
                     case "remove":
-                        tcpIO.sendResponse(Response.createStringResponse(app.remove(command.getObject())));
+                        tcpIO.sendResponse(Response.createStringResponse(app.remove(command.getObject(), command.getLogin())));
                         break;
                     case "info":
                         tcpIO.sendResponse(Response.createStringResponse(app.info(app)));
                         break;
                     case "load":
-                        tcpIO.sendResponse(Response.createStringResponse(colIO.loadCollection()));
+                        tcpIO.sendResponse(Response.createStringResponse(sqlUtils.loadCollection(app)));
                         break;
                     case "save":
-                        tcpIO.sendResponse(Response.createStringResponse(colIO.saveCollection()));
+                        tcpIO.sendResponse(Response.createStringResponse(sqlUtils.saveCollection(app.getCol())));
                         break;
                     case "help":
                         tcpIO.sendResponse(Response.createStringResponse(app.help()));

@@ -1,15 +1,17 @@
 package Lab7;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import source.Protagonist;
+
 import java.util.Random;
 
 public class Registration {
     private static final String passwordAlphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz";
 
-    public boolean sendPasswordEmail(String emailAddress, String password){
+    public void sendPasswordEmail(String emailAddress, String password){
         MailSending ms = new MailSending();
         ms.configureMessage(emailAddress, password);
-        return ms.sendMessage();
+        ms.sendMessage();
     }
 
     public String createRandomPassword() {
@@ -23,11 +25,10 @@ public class Registration {
     }
 
     public static String sha1Coding(String str)  {
-        return DigestUtils.sha1Hex(str);
+        return DigestUtils.shaHex(str);
     }
 
     public static void main(String[] args) {
-        System.out.println(sha1Coding("Hello"));
-        System.out.println(sha1Coding("Hello"));
+        new SQLUtils(new DBConnection()).insertQuery(new Protagonist());
     }
 }
