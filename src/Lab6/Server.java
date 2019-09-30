@@ -51,11 +51,14 @@ public class Server extends Thread {
                             } else {
                                 Registration reg = new Registration();
                                 String password = reg.createRandomPassword();
-                                reg.sendPasswordEmail(cmd.getLogin(), password);
-                                accounts.put(cmd.getLogin(), Registration.sha1Coding(password));
-                                SQLUtils utils = new SQLUtils(new DBConnection());
-                                utils.addNewAccount(cmd.getLogin(), password);
-                                serverIO.sendResponse(Response.createLoggingResponse("На введенный вами адрес электронной почты было отправлено письмо с данными вашей учетной записи. Процесс регистрации завершен"));
+                                if(reg.sendPasswordEmail(cmd.getLogin(), password)) {
+                                    accounts.put(cmd.getLogin(), Registration.sha1Coding(password));
+                                    SQLUtils utils = new SQLUtils(new DBConnection());
+                                    utils.addNewAccount(cmd.getLogin(), password);
+                                    serverIO.sendResponse(Response.createLoggingResponse("На введенный вами адрес электронной почты было отправлено письмо с данными вашей учетной записи. Процесс регистрации завершен"));
+                                } else {
+                                    serverIO.sendResponse(Response.createLoggingResponse("Во время отправки сообщения произошла ошибка, проверьте подключение к сети. Процесс регистрации прерван"));
+                                }
                             }
                         } else {
                             serverIO.sendResponse(Response.createLoggingResponse("Почтовый адрес некорректен. Процесс регистрации прерван"));

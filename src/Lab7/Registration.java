@@ -8,10 +8,10 @@ import java.util.Random;
 public class Registration {
     private static final String passwordAlphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz";
 
-    public void sendPasswordEmail(String emailAddress, String password){
+    public boolean sendPasswordEmail(String emailAddress, String password){
         MailSending ms = new MailSending();
         ms.configureMessage(emailAddress, password);
-        ms.sendMessage();
+        return ms.sendMessage();
     }
 
     public String createRandomPassword() {
