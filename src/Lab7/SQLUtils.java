@@ -94,7 +94,7 @@ public class SQLUtils {
                     String[] array = rs.getString(12).split(",");
                     try {
                         l = new Location(Integer.parseInt(array[0]), Integer.parseInt(array[1]), Integer.parseInt(array[2]));
-                    } catch (ArrayIndexOutOfBoundsException e){
+                    } catch (ArrayIndexOutOfBoundsException | NumberFormatException | NullPointerException e){
                         l = null;
                     }
                 }

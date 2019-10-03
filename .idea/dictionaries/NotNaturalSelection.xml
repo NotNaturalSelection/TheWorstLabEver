@@ -5,6 +5,8 @@
       <w>fowner</w>
       <w>postgresql</w>
       <w>sendable</w>
+      <w>smtp</w>
+      <w>yandex</w>
     </words>
   </dictionary>
 </component>

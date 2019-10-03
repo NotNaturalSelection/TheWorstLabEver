@@ -128,21 +128,13 @@ public class Protagonist implements Comparable<Protagonist>, Serializable {
         }
         return semiResult && Fgender && Flocation && FName && Fowner ;
     }
-//
-//    public boolean ownerEquals(Protagonist pr){
-//        if (this.owner != null) {
-//            return this.owner.equals(pr.owner);
-//        } else {
-//            return pr.owner == null;
-//        }
-//    }
 
     @Override
     public String toString() {
         return "Name = " + Name + ";\ngender = " + gender + ";\nStrength = " + Strength + ";\nAgility = " + Agility + ";\nIntelligence = " + Intelligence +
                 ";\nLuck = " + Luck + ";\nwealth = " + wealth + ";\nLevelOfPain = "
                 + LevelOfPain + ";\nballcounter = " + ballCounter + ";\nDefence = " + Defence +
-                ";\nlocation = " + location + ";\n" + "owner = "+owner;
+                ";\nlocation = " + location + ";\n" + "owner = "+owner +"\nlocalDateTime =" + localDateTime.toString();
     }
 
     @Override

@@ -3,7 +3,7 @@ package Lab7;
 import javax.mail.*;
 import java.util.Properties;
 
-public class MailConfiguration {
+class MailConfiguration {
 
     private Session session;
     private static final String ENCODING = "UTF-8";
@@ -26,7 +26,7 @@ public class MailConfiguration {
         session.setDebug(false);
     }
 
-    public boolean connectTransportSMTP() {
+    boolean connectTransportSMTP() {
         try {
             Transport transport = session.getTransport("smtp");
 
