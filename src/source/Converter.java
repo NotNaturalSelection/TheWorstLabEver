@@ -1,52 +1,52 @@
 package source;
 
 import com.google.gson.Gson;
-
-//import javax.xml.bind.JAXBContext;
-//import javax.xml.bind.JAXBException;
-//import javax.xml.bind.Marshaller;
-//import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Scanner;
 
 public class Converter {
-//    /**
-//     * Преобразует строку, содержащую объект, представленный в формате XML, в объект класса Protagonist
-//     *
-//     * @param xmldata строка, содержащяя объект в формате XML. Подается на вход без пробелов между тегами
-//     * @return объект, полученный из строки
-//     */
-//    public static Protagonist fromXmlToObject(String xmldata) {
-//        try {
-//            JAXBContext jaxbContext = JAXBContext.newInstance(Protagonist.class);
-//            Unmarshaller un = jaxbContext.createUnmarshaller();
-//            StringReader reader = new StringReader(xmldata);
-//            return (Protagonist) un.unmarshal(reader);
-//        } catch (JAXBException e) {
-//            return null;
-//        }
-//    }
-//
-//    /**
-//     * Преобразует объект класса Protagonist, полученный на вход в строку в формате XML
-//     *
-//     * @param pr объект класса Protagonist, который необходимо преобразовать
-//     * @return строка, содержащяя объект представленный в формате XML
-//     */
-//
-//    public static String fromObjectToXml(Protagonist pr) {
-//        try {
-//            StringWriter sw = new StringWriter();
-//            JAXBContext context = JAXBContext.newInstance(Protagonist.class);
-//            Marshaller marshaller = context.createMarshaller();
-//            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-//            marshaller.marshal(pr, sw);
-//            return sw.toString();
-//        } catch (JAXBException e) {
-//            return null;
-//        }
-//    }
+    /**
+     * Преобразует строку, содержащую объект, представленный в формате XML, в объект класса Protagonist
+     *
+     * @param xmldata строка, содержащяя объект в формате XML. Подается на вход без пробелов между тегами
+     * @return объект, полученный из строки
+     */
+    public static Protagonist fromXmlToObject(String xmldata) {
+        try {
+            JAXBContext jaxbContext = JAXBContext.newInstance(Protagonist.class);
+            Unmarshaller un = jaxbContext.createUnmarshaller();
+            StringReader reader = new StringReader(xmldata);
+            return (Protagonist) un.unmarshal(reader);
+        } catch (JAXBException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * Преобразует объект класса Protagonist, полученный на вход в строку в формате XML
+     *
+     * @param pr объект класса Protagonist, который необходимо преобразовать
+     * @return строка, содержащяя объект представленный в формате XML
+     */
+
+    public static String fromObjectToXml(Protagonist pr) {
+        try {
+            StringWriter sw = new StringWriter();
+            JAXBContext context = JAXBContext.newInstance(Protagonist.class);
+            Marshaller marshaller = context.createMarshaller();
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+            marshaller.marshal(pr, sw);
+            return sw.toString();
+        } catch (JAXBException e) {
+            return null;
+        }
+    }
 
     /**
      * Считывает из консоли объект в формате JSON.

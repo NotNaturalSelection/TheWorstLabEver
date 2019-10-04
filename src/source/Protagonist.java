@@ -59,7 +59,7 @@ public class Protagonist implements Comparable<Protagonist>, Serializable {
         this.ballCounter = ballCounter;
         Defence = defence;
         this.owner = owner;
-        if(ldt != null){
+        if (ldt != null) {
             localDateTime = ldt;
         } else {
             localDateTime = LocalDateTime.now();
@@ -126,7 +126,7 @@ public class Protagonist implements Comparable<Protagonist>, Serializable {
         } else {
             Flocation = location.equals(F.location);
         }
-        return semiResult && Fgender && Flocation && FName && Fowner ;
+        return semiResult && Fgender && Flocation && FName && Fowner;
     }
 
     @Override
@@ -134,7 +134,7 @@ public class Protagonist implements Comparable<Protagonist>, Serializable {
         return "Name = " + Name + ";\ngender = " + gender + ";\nStrength = " + Strength + ";\nAgility = " + Agility + ";\nIntelligence = " + Intelligence +
                 ";\nLuck = " + Luck + ";\nwealth = " + wealth + ";\nLevelOfPain = "
                 + LevelOfPain + ";\nballcounter = " + ballCounter + ";\nDefence = " + Defence +
-                ";\nlocation = " + location + ";\n" + "owner = "+owner +"\nlocalDateTime =" + localDateTime.toString();
+                ";\nlocation = " + location + ";\n" + "owner = " + owner + "\nlocalDateTime = " + localDateTime.toString();
     }
 
     @Override

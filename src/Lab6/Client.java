@@ -9,7 +9,7 @@ import java.nio.channels.*;
 import java.util.*;
 
 public class Client {
-    private static final List<String> argumentCommands = Arrays.asList("import", "add", "add_if_min", "remove");
+    private static final List<String> argumentCommands = Arrays.asList("add", "add_if_min", "remove");
     private static final Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
@@ -87,11 +87,11 @@ public class Client {
             Command command;
 
             if (argumentCommands.contains(ConsoleLineApp.commandIdentification(str))) {
-                if (ConsoleLineApp.commandIdentification(str).equals("import")) {
-                    command = clientIO.importFile(str);
-                } else {
+//                if (ConsoleLineApp.commandIdentification(str).equals("import")) {
+//                    command = clientIO.importFile(str);
+//                } else {
                     command = new Command(str, Converter.fromConsoleToObject(str, scanner), null, clientIO.getClientLogin(), clientIO.getClientPassword());
-                }
+//                }
             } else {
                 command = new Command(str, null, null, clientIO.getClientLogin(), clientIO.getClientPassword());
             }

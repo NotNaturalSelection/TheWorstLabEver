@@ -52,7 +52,7 @@ public class CollectionIO {
                 expressions[i] = expressions[i].replaceAll(" ", "");
                 expressions[i] = expressions[i].replaceAll("</collection>", "");
                 expressions[i] += "</protagonist>";
-//                col.add(Converter.fromXmlToObject(expressions[i])); РАСКОММЕНТИТЬ, ЕСЛИ ПОНАДОБИТСЯ
+                col.add(Converter.fromXmlToObject(expressions[i]));
             }
             if(!col.isEmpty()){
                 return("Коллекция была загружена успешно");

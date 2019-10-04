@@ -40,10 +40,11 @@ public class CommandExecution extends Thread {
                     this.interrupt();
                 }
                 cmd = cmd.trim();
+                System.out.println(cmd);
                 switch (cmd) {
-                    case "import":
-                        tcpIO.sendResponse(Response.createStringResponse(app.importFile(command)));
-                        break;
+//                    case "import":
+//                        tcpIO.sendResponse(Response.createStringResponse(app.importFile(command)));
+//                        break;
                     case "":
                         tcpIO.sendResponse(Response.createStringResponse(""));
                         break;

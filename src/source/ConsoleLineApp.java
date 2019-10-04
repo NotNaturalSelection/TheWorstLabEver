@@ -30,7 +30,7 @@ public class ConsoleLineApp {
             "show", "info", "load",
             "save", "quit", "exit",
             "add", "add_if_min",
-            "remove", "help", "filepath", "import"};
+            "remove", "help", "filepath"};
     private Date date;
     private Set<Protagonist> col =  Collections.synchronizedSet(new LinkedHashSet<>());
 
