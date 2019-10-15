@@ -46,6 +46,6 @@ public class MailSending {
     }
 
     public static boolean isMailAddressCorrect(String address){
-        return address.indexOf('@') > 0 && address.indexOf('.') > address.indexOf('@') && address.indexOf('.') < address.length() - 1;
+        return address.indexOf('@') > 0 && address.indexOf('.') < address.length() - 1;
     }
 }

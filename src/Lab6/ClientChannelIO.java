@@ -9,6 +9,8 @@ import java.nio.ByteBuffer;
 import java.nio.channels.NotYetConnectedException;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
+import java.util.NoSuchElementException;
+import java.util.Scanner;
 
 public class ClientChannelIO {
     private SocketChannel channel;
@@ -23,9 +25,9 @@ public class ClientChannelIO {
 
     private String clientPassword;
 
-    boolean isClientLogged = false;
+    private boolean isClientLogged = false;
 
-    public ClientChannelIO(String host, int port, SocketChannel channel) {
+    ClientChannelIO(String host, int port, SocketChannel channel) {
         isConnected = true;
         this.channel = channel;
         this.port = port;
@@ -49,10 +51,8 @@ public class ClientChannelIO {
 
         } catch (IOException | NotYetConnectedException e) {
             isConnected = false;
-            //e.printStackTrace();
             if (connectionAttempt(host, port)) {
-                System.out.println(receiveResponse().toString());
-                sendCommand(command);
+                registration(true);
             } else {
                 System.out.println("Во время передачи сообщения произошла ошибка. Сервер недоступен");
             }
@@ -61,18 +61,11 @@ public class ClientChannelIO {
 
     Response receiveResponse() {
         try {
-//            return (Response) new ObjectInputStream(channel.socket().getInputStream()).readObject();
-//            byte[] array = new byte[100000];
             ByteBuffer buffer = ByteBuffer.allocate(100000);
             channel.read(buffer);
             return (Response) new ObjectInputStream(new ByteArrayInputStream(buffer.array())).readObject();
         } catch (IOException | ClassNotFoundException | NotYetConnectedException e) {
             isConnected = false;
-//            //e.printStackTrace();
-//            if (connectionAttempt(host, port)) {
-//                return Response.createStringResponse("");
-//            }
-//            return Response.createStringResponse("Во время получения ответа сервера произошла ошибка. Сервер недоступен");
             return Response.createStringResponse("");
         }
     }
@@ -82,29 +75,28 @@ public class ClientChannelIO {
         return receiveResponse().toString().equals("test");
     }
 
-    boolean connectionAttempt(String host, int port) {
+    private boolean connectionAttempt(String host, int port) {
         if (!isConnected) {
             System.out.println("Установка соединения с сервером");
             try {
                 channel = SocketChannel.open();
                 channel.connect(new InetSocketAddress(host, port));
-                System.out.println("Соединение установлено");
+                System.out.println("Соединение установлено, необходимо пройти процесс авторизации заново");
                 return true;
             } catch (Exception e) {
-                //e.printStackTrace();
                 System.out.println("Ошибка соединения, сервер недоступен");
                 return false;
             }
         } else {
-            return isConnected;
+            return true;
         }
     }
 
-    public String getClientLogin() {
+    String getClientLogin() {
         return clientLogin;
     }
 
-    public String getClientPassword() {
+    String getClientPassword() {
         return clientPassword;
     }
 
@@ -131,7 +123,7 @@ public class ClientChannelIO {
         }
     }
 
-    public void setClientLogged(String login, String password){
+    void setClientLogged(String login, String password){
         clientLogin = login;
         clientPassword = password;
         isClientLogged = true;
@@ -139,5 +131,54 @@ public class ClientChannelIO {
 
     public SocketChannel getChannel() {
         return channel;
+    }
+
+    void registration(boolean isReconnect){
+        ClientChannelIO clientIO = this;
+        Scanner scanner = Client.getScanner();
+        Response rs = clientIO.receiveResponse();
+        System.out.println(rs.toString());
+        while (true) {
+            try {
+
+                System.out.println("Для авторизации введите \"auth\", для регистрации - \"reg\", для выхода - \"quit\"");
+                String line = scanner.nextLine();
+                clientIO.sendCommand(new Command("", null, null, line, ""));
+                rs = clientIO.receiveResponse();
+                switch (rs.toString()) {
+                    case "auth":
+                        System.out.println("Введите логин");
+                        String login = scanner.nextLine();
+                        System.out.println("Введите пароль для " + login);
+                        String password = scanner.nextLine();
+                        clientIO.sendCommand(new Command("", null, null, login, password));
+                        rs = clientIO.receiveResponse();
+                        System.out.println(rs.toString());
+                        if (!rs.isLoggingResponse()) {
+                            clientIO.setClientLogged(login, password);
+                            if(isReconnect){
+                                clientIO.sendCommand(new Command("",null,null,clientLogin, clientPassword));
+                            }
+                            return;
+                        }
+                        break;
+                    case "reg":
+                        System.out.println("Введите адрес электронной почты, на который будет отправлено письмо с вашими данными.");
+                        String log = scanner.nextLine();
+                        clientIO.sendCommand(new Command("", null, null, log, ""));
+                        System.out.println(clientIO.receiveResponse());
+                        break;
+                    case "Команда не распознана":
+                        System.out.println("Команда не распознана. Используйте \"reg\", " +
+                                "чтобы создать новую учетную запись или \"auth\", чтобы войти в существующую. Для выхода введите \"quit\"");
+                        break;
+                    case "Клиент отсоединился":
+                        System.exit(0);
+                        break;
+                }
+            } catch (NoSuchElementException e){
+                clientIO.sendCommand(new Command("", null, null, "quit", ""));
+            }
+        }
     }
 }

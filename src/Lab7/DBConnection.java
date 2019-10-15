@@ -2,7 +2,7 @@ package Lab7;
 
 import java.sql.*;
 
-public class DBConnection {
+class DBConnection {
 
     private static final String DB_URL = "jdbc:postgresql://127.0.0.1:5432/lab";
 
@@ -12,7 +12,7 @@ public class DBConnection {
 
     private Connection connection;
 
-    public DBConnection() {
+    DBConnection() {
         try {
             Class.forName("org.postgresql.Driver");
         } catch (ClassNotFoundException ignored) {}

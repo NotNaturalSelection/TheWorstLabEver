@@ -53,7 +53,7 @@ public class Server extends Thread {
                                 String password = reg.createRandomPassword();
                                 if(reg.sendPasswordEmail(cmd.getLogin(), password)) {
                                     accounts.put(cmd.getLogin(), Registration.sha1Coding(password));
-                                    SQLUtils utils = new SQLUtils(new DBConnection());
+                                    SQLUtils utils = new SQLUtils();
                                     utils.addNewAccount(cmd.getLogin(), password);
                                     serverIO.sendResponse(Response.createLoggingResponse("На введенный вами адрес электронной почты было отправлено письмо с данными вашей учетной записи. Процесс регистрации завершен"));
                                 } else {
@@ -68,7 +68,6 @@ public class Server extends Thread {
                         serverIO.sendResponse(Response.createLoggingResponse("auth"));
                         Command log = serverIO.receiveCommand();
                         if (isLoginValid(log.getLogin())) {
-
                             if (isPasswordValid(log.getLogin(), log.getPassword())) {
                                 auth = true;
                                 serverIO.sendResponse(Response.createStringResponse("Вход выполнен успешно"));
@@ -89,7 +88,7 @@ public class Server extends Thread {
             }
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-            SQLUtils utils = new SQLUtils(new DBConnection());
+            SQLUtils utils = new SQLUtils();
             utils.loadCollection(app);
             while (true) {
                 Command command = serverIO.receiveCommand();
@@ -127,7 +126,7 @@ public class Server extends Thread {
     }
 
     private void  updateAccountsMap() {
-        SQLUtils sqlUtils = new SQLUtils(new DBConnection());
+        SQLUtils sqlUtils = new SQLUtils();
         accounts = sqlUtils.parseAccountsResultSet(sqlUtils.getUsersTable());
     }
 }

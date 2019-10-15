@@ -9,16 +9,10 @@ import java.util.*;
 
 public class SQLUtils {
 
-//    public static void main(String[] args) {
-//        DBConnection dbc = new DBConnection();
-//        SQLUtils sqlUtils = new SQLUtils(dbc);
-//        System.out.println(sqlUtils.parseAccountsResultSet(sqlUtils.getUsersTable()));
-//    }
+    private final Connection connection;
 
-    private Connection connection;
-
-    public SQLUtils(DBConnection dbc) {
-        this.connection = dbc.getConnection();
+    public SQLUtils() {
+        this.connection = new DBConnection().getConnection();
     }
 
     public String loadCollection(ConsoleLineApp app){
@@ -32,6 +26,7 @@ public class SQLUtils {
     }
     public String saveCollection( Set<? extends Protagonist> set){
         try {
+            createTableProtagonists();
             connection.createStatement().executeUpdate("delete from lab.protagonists.protagonists;");
             for (Protagonist pr: set) {
                 insertQuery(pr);
@@ -43,6 +38,7 @@ public class SQLUtils {
 
     private ResultSet getAllItems(){
         try {
+            createTableProtagonists();
             return connection.createStatement().executeQuery("select * from lab.protagonists.protagonists;");
         } catch (SQLException e) {
             return null;
@@ -51,14 +47,14 @@ public class SQLUtils {
 
     public ResultSet getUsersTable(){
         try{
+            createTableAccounts();
             return connection.createStatement().executeQuery("select * from lab.accounts.accounts;");
         } catch (SQLException e){
-            e.printStackTrace();
             return null;
         }
     }
 
-    void insertQuery(Protagonist pr) {
+    private void insertQuery(Protagonist pr) {
         try {
             PreparedStatement statement = connection.prepareStatement("insert into lab.protagonists.protagonists values (?,?,?,?,?,?,?,?,?,?,?,?,?)");
             statement.setString(1, pr.getGender());
@@ -80,22 +76,20 @@ public class SQLUtils {
             }
             statement.setString(13,pr.getOwner());
             statement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        } catch (SQLException ignored) {}
     }
 
     private Set<Protagonist> parseResultSet(ResultSet rs){
         Set<Protagonist> set = new HashSet<>();
         try {
             while(rs.next()){
-                Location l = null;
+                Location location = null;
                 if(rs.getString(12) != null){
                     String[] array = rs.getString(12).split(",");
                     try {
-                        l = new Location(Integer.parseInt(array[0]), Integer.parseInt(array[1]), Integer.parseInt(array[2]));
+                        location = new Location(Integer.parseInt(array[0]), Integer.parseInt(array[1]), Integer.parseInt(array[2]));
                     } catch (ArrayIndexOutOfBoundsException | NumberFormatException | NullPointerException e){
-                        l = null;
+                        location = null;
                     }
                 }
                 set.add(new Protagonist(
@@ -110,11 +104,11 @@ public class SQLUtils {
                         rs.getFloat(9),
                         rs.getFloat(10),
                         rs.getTimestamp(11).toLocalDateTime(),
-                        l,
+                        location,
                         rs.getString(13)
                 ));
             }
-        } catch (SQLException ignored) {}
+        } catch (Exception ignored) {}
         return set;
     }
 
@@ -130,7 +124,7 @@ public class SQLUtils {
 
     public void createTableProtagonists() {
         try {
-            connection.createStatement().executeUpdate( "CREATE TABLE protagonists(" +
+            connection.createStatement().executeUpdate( "create table if not exists lab.protagonists.protagonists(" +
                     "gender text," +
                     "name text," +
                     "strength float ," +
@@ -153,36 +147,11 @@ public class SQLUtils {
 
     public void createTableAccounts() {
         try{
-            connection.createStatement().executeUpdate("create table accounts(" +
+            connection.createStatement().executeUpdate("create table if not exists lab.accounts.accounts(" +
                     "login text," +
                     "password text);");
-        } catch (SQLException ignored){}
-    }
-
-    public boolean isTableOfProtagonistsExists() {
-        boolean result = false;
-        try {
-            ResultSet rs = connection.createStatement().executeQuery("SELECT table_name FROM information_schema.tables  WHERE table_schema='public';");
-            while(rs.next()){
-                if(rs.getString(1).equals("protagonists")){
-                    result = true;
-                }
-            }
-        } catch (SQLException ignored) {}
-        return result;
-    }
-
-    public boolean isTableOfAccountsExists() {
-        boolean result = false;
-        try {
-            ResultSet rs = connection.createStatement().executeQuery("SELECT table_name FROM information_schema.tables  WHERE table_schema='public';");
-            while(rs.next()){
-                if(rs.getString(1).equals("accounts")){
-                    result = true;
-                }
-            }
-        } catch (SQLException ignored) {}
-        return result;
+        } catch (SQLException ignored){
+        }
     }
 
     public void addNewAccount(String login, String password){
@@ -191,8 +160,7 @@ public class SQLUtils {
             st.setString(1, login);
             st.setString(2, Registration.sha1Coding(password));
             st.executeUpdate();
-        } catch (SQLException ignored) {
-        }
+        } catch (SQLException ignored) {}
     }
 
 }

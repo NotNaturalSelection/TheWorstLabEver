@@ -1,6 +1,6 @@
 package Lab6;
 
-import Lab7.DBConnection;
+import Lab7.Registration;
 import Lab7.SQLUtils;
 import source.*;
 
@@ -17,7 +17,7 @@ public class CommandExecution extends Thread {
         this.command = command;
         this.dos = dos;
         this.app = app;
-        this.sqlUtils = new SQLUtils(new DBConnection());
+        this.sqlUtils = new SQLUtils();
         this.start();
     }
 
@@ -32,6 +32,10 @@ public class CommandExecution extends Thread {
             try {
                 ServerIO tcpIO = new ServerIO(null, dos);
                 String cmd;
+                if(!Registration.isAccountCorrect(command.getLogin(), command.getPassword())){
+                    tcpIO.sendResponse(Response.createStringResponse("Учетные данные не проходят идентификацию"));
+                    this.interrupt();
+                }
                 try {
                     cmd = ConsoleLineApp.commandIdentification(command.getStringCommand());
                 } catch (NullPointerException e) {
@@ -40,11 +44,8 @@ public class CommandExecution extends Thread {
                     this.interrupt();
                 }
                 cmd = cmd.trim();
-                System.out.println(cmd);
                 switch (cmd) {
-//                    case "import":
-//                        tcpIO.sendResponse(Response.createStringResponse(app.importFile(command)));
-//                        break;
+
                     case "":
                         tcpIO.sendResponse(Response.createStringResponse(""));
                         break;
@@ -86,3 +87,7 @@ public class CommandExecution extends Thread {
         }
     }
 }
+
+//                    case "import":
+//                        tcpIO.sendResponse(Response.createStringResponse(app.importFile(command)));
+//                        break;

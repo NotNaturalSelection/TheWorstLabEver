@@ -33,47 +33,50 @@ public class Client {
             }
         }
         ClientChannelIO clientIO = new ClientChannelIO(args[0], Integer.parseInt(args[1]), channel);
-        boolean auth = false;
 
-
-
+        clientIO.registration(false);
         //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-        Response rs = clientIO.receiveResponse();
-        System.out.println(rs.toString());
-        while (!auth) {
-            System.out.println("Для авторизации введите \"auth\", для регистрации - \"reg\", для выхода - \"quit\"");
-            String line = scanner.nextLine();
-            clientIO.sendCommand(new Command("", null, null, line, ""));
-            rs = clientIO.receiveResponse();
-            switch (rs.toString()){
-                case "auth":
-                    System.out.println("Введите логин");
-                    String login = scanner.nextLine();
-                    System.out.println("Введите пароль для "+login);
-                    String password = scanner.nextLine();
-                    clientIO.sendCommand(new Command("", null,null, login, password));
-                    rs = clientIO.receiveResponse();
-                    System.out.println(rs.toString());
-                    if(!rs.isLoggingResponse()){
-                        auth = true;
-                        clientIO.setClientLogged(login, password);
-                    }
-                    break;
-                case "reg":
-                    System.out.println("Введите адрес электронной почты, на который будет отправлено письмо с вашими данными.");
-                    String log = scanner.nextLine();
-                    clientIO.sendCommand(new Command("",null,null,log,""));
-                    System.out.println(clientIO.receiveResponse());
-                    break;
-                case "Команда не распознана":
-                    System.out.println("Команда не распознана. Используйте \"reg\", " +
-                            "чтобы создать новую учетную запись или \"auth\", чтобы войти в существующую. Для выхода введите \"quit\"");
-                    break;
-                case "Клиент отсоединился":
-                    System.exit(0);
-                    break;
-            }
-        }
+//        Response rs = clientIO.receiveResponse();
+//        System.out.println(rs.toString());
+//        while (!auth) {
+//            try {
+//
+//            System.out.println("Для авторизации введите \"auth\", для регистрации - \"reg\", для выхода - \"quit\"");
+//            String line = scanner.nextLine();
+//            clientIO.sendCommand(new Command("", null, null, line, ""));
+//            rs = clientIO.receiveResponse();
+//            switch (rs.toString()) {
+//                case "auth":
+//                    System.out.println("Введите логин");
+//                    String login = scanner.nextLine();
+//                    System.out.println("Введите пароль для " + login);
+//                    String password = scanner.nextLine();
+//                    clientIO.sendCommand(new Command("", null, null, login, password));
+//                    rs = clientIO.receiveResponse();
+//                    System.out.println(rs.toString());
+//                    if (!rs.isLoggingResponse()) {
+//                        auth = true;
+//                        clientIO.setClientLogged(login, password);
+//                    }
+//                    break;
+//                case "reg":
+//                    System.out.println("Введите адрес электронной почты, на который будет отправлено письмо с вашими данными.");
+//                    String log = scanner.nextLine();
+//                    clientIO.sendCommand(new Command("", null, null, log, ""));
+//                    System.out.println(clientIO.receiveResponse());
+//                    break;
+//                case "Команда не распознана":
+//                    System.out.println("Команда не распознана. Используйте \"reg\", " +
+//                            "чтобы создать новую учетную запись или \"auth\", чтобы войти в существующую. Для выхода введите \"quit\"");
+//                    break;
+//                case "Клиент отсоединился":
+//                    System.exit(0);
+//                    break;
+//            }
+//            } catch (NoSuchElementException e){
+//                clientIO.sendCommand(new Command("", null, null, "quit", ""));
+//            }
+//        }
         //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
@@ -111,5 +114,9 @@ public class Client {
                 System.exit(0);
             }
         }
+    }
+
+    public static Scanner getScanner() {
+        return scanner;
     }
 }

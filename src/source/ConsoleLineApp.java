@@ -1,6 +1,5 @@
 package source;
 
-import Lab7.DBConnection;
 import Lab7.SQLUtils;
 import com.google.gson.JsonSyntaxException;
 
@@ -65,7 +64,7 @@ public class ConsoleLineApp {
                 } else {
                     col.add(pr);
                     if (col.contains(pr)) {
-                        new SQLUtils(new DBConnection()).saveCollection(this.getCol());
+                        new SQLUtils().saveCollection(this.getCol());
                         return ("Добавление элемента в коллекцию выполнено успешно");
                     } else {
                         return "Неизвестная ошибка, объект не был добавлен";
@@ -95,7 +94,7 @@ public class ConsoleLineApp {
                         if (Collections.min(col).getName() != null && pr.getName() != null) {
                             if (Collections.min(col).getName().length() > pr.getName().length()) {
                                 col.add(pr);
-                                new SQLUtils(new DBConnection()).saveCollection(this.getCol());
+                                new SQLUtils().saveCollection(this.getCol());
                             }
                             if (col.contains(pr)) {
                                 return ("Добавление элемента в коллекцию выполнено успешно");
@@ -104,7 +103,7 @@ public class ConsoleLineApp {
                             }
                         } else {
                             col.add(pr);
-                            new SQLUtils(new DBConnection()).saveCollection(this.getCol());
+                            new SQLUtils().saveCollection(this.getCol());
                             if (col.contains(pr)) {
                                 return ("Добавление элемента в коллекцию выполнено успешно");
                             } else {
@@ -113,7 +112,7 @@ public class ConsoleLineApp {
                         }
                     } else {
                         col.add(pr);
-                        new SQLUtils(new DBConnection()).saveCollection(this.getCol());
+                        new SQLUtils().saveCollection(this.getCol());
                         if (col.contains(pr)) {
                             return ("Добавление элемента в коллекцию выполнено успешно");
                         } else {
@@ -142,7 +141,7 @@ public class ConsoleLineApp {
                     return ("Коллекция не содержит такой объект или вы не являетесь его владельцем");
                 } else {
                     col.remove(pr);
-                    new SQLUtils(new DBConnection()).saveCollection(this.getCol());
+                    new SQLUtils().saveCollection(this.getCol());
                     if (!col.contains(pr)) {
                         return "Удаление элемента из коллекции выполнено успешно";
                     } else {
@@ -195,9 +194,9 @@ public class ConsoleLineApp {
         );
     }
 
-    public String importFile(Command command){
-        return new CollectionIO(command, this.getCol()).loadCollection();
-    }
+//    public String importFile(Command command){
+//        return new CollectionIO(command, this.getCol()).loadCollection();
+//    }
 
     public ConsoleLineApp(Date date) {
         this.date = date;

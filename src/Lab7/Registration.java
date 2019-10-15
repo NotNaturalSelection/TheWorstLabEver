@@ -1,8 +1,7 @@
 package Lab7;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import source.Protagonist;
-
+import java.util.Map;
 import java.util.Random;
 
 public class Registration {
@@ -28,7 +27,15 @@ public class Registration {
         return DigestUtils.shaHex(str);
     }
 
-    public static void main(String[] args) {
-        new SQLUtils(new DBConnection()).insertQuery(new Protagonist());
+    public static boolean isAccountCorrect(String login, String password){
+        SQLUtils utils = new SQLUtils();
+        Map<String, String> accounts = utils.parseAccountsResultSet(utils.getUsersTable());
+        boolean result = false;
+        if(accounts.containsKey(login)){
+            if(accounts.get(login).equals(sha1Coding(password))){
+                result = true;
+            }
+        }
+        return result;
     }
 }
