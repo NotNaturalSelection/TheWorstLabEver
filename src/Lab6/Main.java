@@ -13,22 +13,20 @@ public class Main {
 
     public static void main(String[] args) {
         try {
-            try {
-                int numberOfClient = 0;
-                InetAddress inetAddress = InetAddress.getByName("localhost");
-                ServerSocket serverSocket = new ServerSocket(port, 0, inetAddress);
-                ConsoleLineApp app = new ConsoleLineApp(new Date());
-                SQLUtils utils = new SQLUtils();
-                utils.createTableAccounts();
-                utils.createTableProtagonists();
-                while (true) {
-                    Socket socket = serverSocket.accept();
-                    new Server().setSocket(socket, numberOfClient++, app);
-                }
-            } catch (Exception e) {
-                System.out.println("Порт или хост недоступен");
+            int numberOfClient = 0;
+            InetAddress inetAddress = InetAddress.getByName("localhost");
+            ServerSocket serverSocket = new ServerSocket(port, 0, inetAddress);
+            ConsoleLineApp app = new ConsoleLineApp(new Date());
+            SQLUtils utils = new SQLUtils();
+            utils.createTableAccounts();
+            utils.createTableProtagonists();
+            while (true) {
+                Socket socket = serverSocket.accept();
+                new Server().setSocket(socket, numberOfClient++, app);
             }
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Порт или хост недоступен");
         }
     }
 }

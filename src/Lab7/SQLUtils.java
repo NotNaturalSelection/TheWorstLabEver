@@ -12,7 +12,7 @@ public class SQLUtils {
     private final Connection connection;
 
     public SQLUtils() {
-        this.connection = new DBConnection().getConnection();
+        this.connection = DBConnection.getInstance().getConnection();
     }
 
     public void loadCollection(ConsoleLineApp app){
@@ -20,7 +20,7 @@ public class SQLUtils {
             app.getCol().clear();
             app.getCol().addAll(parseResultSet(Objects.requireNonNull(getAllItems())));
         } catch (NullPointerException e){
-            e.printStackTrace();
+
         }
     }
     public void saveCollection(Set<? extends Protagonist> set){
@@ -30,7 +30,8 @@ public class SQLUtils {
             for (Protagonist pr: set) {
                 insertQuery(pr);
             }
-        } catch (SQLException ignored) {}
+        } catch (SQLException e) {
+        }
     }
 
     private ResultSet getAllItems(){
@@ -73,7 +74,8 @@ public class SQLUtils {
             }
             statement.setString(13,pr.getOwner());
             statement.executeUpdate();
-        } catch (SQLException ignored) {}
+        } catch (SQLException e) {
+        }
     }
 
     private Set<Protagonist> parseResultSet(ResultSet rs){
@@ -105,7 +107,8 @@ public class SQLUtils {
                         rs.getString(13)
                 ));
             }
-        } catch (Exception ignored) {}
+        } catch (Exception e) {
+        }
         return set;
     }
 
@@ -115,7 +118,8 @@ public class SQLUtils {
             while(rs.next()){
                 map.put(rs.getString(1), rs.getString(2));
             }
-        }catch (SQLException ignored){}
+        }catch (SQLException e){
+        }
         return map;
     }
 
@@ -133,13 +137,12 @@ public class SQLUtils {
                     "levelOfPain float ," +
                     "defence float," +
                     "localDateTime timestamptz," +
-                    "x int," +
-                    "y int," +
-                    "z int," +
+                    "location text,"+
                     "owner text" +
                     ");");
 
-        } catch (SQLException ignored) {}
+        } catch (SQLException e) {
+        }
     }
 
     public void createTableAccounts() {
@@ -147,7 +150,7 @@ public class SQLUtils {
             connection.createStatement().executeUpdate("create table if not exists lab.accounts.accounts(" +
                     "login text," +
                     "password text);");
-        } catch (SQLException ignored){
+        } catch (SQLException e){
         }
     }
 
@@ -157,7 +160,9 @@ public class SQLUtils {
             st.setString(1, login);
             st.setString(2, Registration.sha1Coding(password));
             st.executeUpdate();
-        } catch (SQLException ignored) {}
+        } catch (SQLException e) {
+
+        }
     }
 
 }

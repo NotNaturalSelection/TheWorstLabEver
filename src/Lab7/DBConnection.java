@@ -12,15 +12,28 @@ class DBConnection {
 
     private Connection connection;
 
-    DBConnection() {
+    private static DBConnection instance;
+
+    private DBConnection() {
         try {
             Class.forName("org.postgresql.Driver");
-        } catch (ClassNotFoundException ignored) {}
+        } catch (ClassNotFoundException ignored) {
+        }
         connection = null;
         try {
             connection = DriverManager
                     .getConnection(DB_URL, USER, PASS);
-        } catch (SQLException ignored) {}
+        } catch (SQLException e) {
+            System.out.println();
+            System.exit(0);
+        }
+    }
+
+    public static DBConnection getInstance() {
+        if (instance == null) {
+            instance = new DBConnection();
+        }
+        return instance;
     }
 
     Connection getConnection() {

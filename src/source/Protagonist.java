@@ -134,7 +134,7 @@ public class Protagonist implements Comparable<Protagonist>, Serializable {
         return "Name = " + Name + ";\ngender = " + gender + ";\nStrength = " + Strength + ";\nAgility = " + Agility + ";\nIntelligence = " + Intelligence +
                 ";\nLuck = " + Luck + ";\nwealth = " + wealth + ";\nLevelOfPain = "
                 + LevelOfPain + ";\nballcounter = " + ballCounter + ";\nDefence = " + Defence +
-                ";\nlocation = " + location + ";\n" + "owner = " + owner + "\nlocalDateTime = " + localDateTime.toString();
+                ";\nlocation = " + location + ";\n" + "owner = " + owner + ";\nlocalDateTime = " + localDateTime.toString();
     }
 
     @Override
