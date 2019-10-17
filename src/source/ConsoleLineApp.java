@@ -1,5 +1,6 @@
 package source;
 
+import Lab6.Response;
 import Lab7.SQLUtils;
 import com.google.gson.JsonSyntaxException;
 
@@ -26,28 +27,19 @@ import java.util.*;
  */
 public class ConsoleLineApp {
     private static final String[] commands = {
-            "show", "info", "load",
-            "save", "quit", "exit",
+            "show", "info", "quit", "exit",
             "add", "add_if_min",
-            "remove", "help", "filepath"};
+            "remove", "help"};
     private Date date;
     private Set<Protagonist> col =  Collections.synchronizedSet(new LinkedHashSet<>());
+    private SQLUtils utils;
 
     /**
      * показать объекты, которые на данный момент содержатся в коллекции
      */
-    public String show() {
-        if (col.isEmpty()) {
-            return ("Коллекция пуста");
-        } else {
-            int i = 0;
-            StringBuilder result = new StringBuilder();
-            for (Protagonist pr : col) {
-                result.append(++i).append("\n");
-                result.append(pr.toString()).append("\n");
-            }
-            return result.toString();
-        }
+    public Response show() {
+        utils.loadCollection(this);
+        return Response.createFullResponse("collection", this.getCol());
     }
 
     /**
@@ -57,6 +49,7 @@ public class ConsoleLineApp {
      */
     public String add(Protagonist pr, String login) {
         try {
+            utils.loadCollection(this);
             if (pr != null) {
                 pr.setOwner(login);
                 if (col.contains(pr)) {
@@ -85,6 +78,7 @@ public class ConsoleLineApp {
      */
     public String addIfMin(Protagonist pr, String login) {
         try {
+            utils.loadCollection(this);
             if (pr != null) {
                 pr.setOwner(login);
                 if (col.contains(pr)) {
@@ -135,6 +129,7 @@ public class ConsoleLineApp {
      */
     public String remove(Protagonist pr, String login) {
         try {
+            utils.loadCollection(this);
             if (pr != null) {
                 pr.setOwner(login);
                 if (!col.contains(pr)) {
@@ -160,6 +155,7 @@ public class ConsoleLineApp {
      * Выводит информацию о коллекции
      */
     public String info(ConsoleLineApp app) {
+        utils.loadCollection(this);
         return ("Тип коллекции - HashSet;\nКоличество элементов = " + col.size() + ";\n" +
                 "Дата инициализации: " + app.date);
     }
@@ -169,8 +165,8 @@ public class ConsoleLineApp {
      */
     public String help() {
         return ("Список доступных команд:\nshow - вывести содержимое " +
-                "коллекции\ninfo - получить информацию о коллекции\nload - загрузить коллекцию из файла\n" +
-                "save - сохранить коллекцию в файл\nquit - выйти из консольного приложения\nadd - добавить " +
+                "коллекции\ninfo - получить информацию о коллекции\n" +
+                "quit - выйти из консольного приложения\nadd - добавить " +
                 "элемет в коллекцию\nadd_if_min - " +
                 "добавить элемент, если он является минимальным для коллекции\nremove - удалить элемент.\n" +
                 "После введение команд add, add_if_min, remove следует ввести объект в формате JSON:\n" +
@@ -199,6 +195,7 @@ public class ConsoleLineApp {
 //    }
 
     public ConsoleLineApp(Date date) {
+        utils = new SQLUtils();
         this.date = date;
     }
 

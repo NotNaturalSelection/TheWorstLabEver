@@ -50,7 +50,7 @@ public class CommandExecution extends Thread {
                         tcpIO.sendResponse(Response.createStringResponse(""));
                         break;
                     case "show":
-                        tcpIO.sendResponse(Response.createFullResponse("collection", app.getCol()));
+                        tcpIO.sendResponse(app.show());
                         break;
                     case "add":
                         tcpIO.sendResponse(Response.createStringResponse(app.add(command.getObject(),command.getLogin())));
@@ -64,12 +64,12 @@ public class CommandExecution extends Thread {
                     case "info":
                         tcpIO.sendResponse(Response.createStringResponse(app.info(app)));
                         break;
-                    case "load":
-                        tcpIO.sendResponse(Response.createStringResponse(sqlUtils.loadCollection(app)));
-                        break;
-                    case "save":
-                        tcpIO.sendResponse(Response.createStringResponse(sqlUtils.saveCollection(app.getCol())));
-                        break;
+//                    case "load":
+//                        tcpIO.sendResponse(Response.createStringResponse(sqlUtils.loadCollection(app)));
+//                        break;
+//                    case "save":
+//                        tcpIO.sendResponse(Response.createStringResponse(sqlUtils.saveCollection(app.getCol())));
+//                        break;
                     case "help":
                         tcpIO.sendResponse(Response.createStringResponse(app.help()));
                         break;

@@ -15,25 +15,22 @@ public class SQLUtils {
         this.connection = new DBConnection().getConnection();
     }
 
-    public String loadCollection(ConsoleLineApp app){
+    public void loadCollection(ConsoleLineApp app){
         try {
-            Set<Protagonist> set = app.getCol();
-            set.addAll(parseResultSet(Objects.requireNonNull(getAllItems())));
-            return "Коллекция была загружена успешно";
+            app.getCol().clear();
+            app.getCol().addAll(parseResultSet(Objects.requireNonNull(getAllItems())));
         } catch (NullPointerException e){
-            return "Произошла ошибка во время загрузки коллекции";
+            e.printStackTrace();
         }
     }
-    public String saveCollection( Set<? extends Protagonist> set){
+    public void saveCollection(Set<? extends Protagonist> set){
         try {
             createTableProtagonists();
             connection.createStatement().executeUpdate("delete from lab.protagonists.protagonists;");
             for (Protagonist pr: set) {
                 insertQuery(pr);
             }
-            return "Коллекция была сохранена успешно";
         } catch (SQLException ignored) {}
-        return "Во время сохранения коллекции произошла ошибка";
     }
 
     private ResultSet getAllItems(){

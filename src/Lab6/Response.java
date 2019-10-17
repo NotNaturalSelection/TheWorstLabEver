@@ -25,7 +25,7 @@ public class Response implements Serializable {
         return new Response(message, null);
     }
 
-    static Response createFullResponse(String message, Set<Protagonist> collection){
+    public static Response createFullResponse(String message, Set<Protagonist> collection){
         return new Response(message, collection);
     }
 
